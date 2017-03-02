@@ -12,7 +12,6 @@ Using the core homomorphic cryptosystem, we have built several applications. Exa
   1. PIR      :https://eprint.iacr.org/2014/232.pdf
   2. PRINCE   :https://eprint.iacr.org/2014/233.pdf
   3. SORTING  :https://eprint.iacr.org/2015/274.pdf
-  4. AUTOCOMPLETE :https://eprint.iacr.org/2015/1194.pdf
 
 # Installation
 
