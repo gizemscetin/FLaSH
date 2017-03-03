@@ -4,7 +4,7 @@ using namespace std;
 using namespace NTL;
 
 
-
+// Test Flash library
 int main()
 {
 
@@ -20,7 +20,8 @@ int main()
     L.Mult(c, c);
 
     L.Decrypt(b, c);
-    cout << b << endl;
+    cout << c << endl;
+cout << b << endl;
 
     return 0;
 }
