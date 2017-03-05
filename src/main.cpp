@@ -1,4 +1,5 @@
-#include "homlib.h"
+#include "arith.h"
+#include "flash.h"
 
 using namespace std;
 using namespace NTL;
@@ -7,21 +8,21 @@ using namespace NTL;
 // Test Flash library
 int main()
 {
+    Flash F;
+    F.InitParams();
+    F.InitKeys();
+    F.InitCrypter();
 
-    LaSH L;
+    Plaintext m(1);
+    cout << "Message: " <<  m << endl;
+    Ciphertext c;
+    Plaintext pt;
 
-    ZZX m, b;
+    F.encrypter()->Encrypt(c, m);
+    cout << "Ciphertext : " << endl << c << endl;
+    F.decrypter()->Decrypt(pt, c);
+    cout << "Plaintext : " << pt << endl;
 
-    CipherText c, result;
-
-    m = 1;
-    L.Encrypt(c, m);
-
-    L.Mult(c, c);
-
-    L.Decrypt(b, c);
-    cout << c << endl;
-cout << b << endl;
 
     return 0;
 }
