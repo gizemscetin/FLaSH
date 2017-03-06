@@ -9,7 +9,7 @@ using namespace NTL;
 int main()
 {
     Flash F;
-    F.InitParams();
+    F.InitParams(Toy);
     F.InitKeys();
     F.InitCrypter();
 
@@ -22,7 +22,6 @@ int main()
     cout << "Ciphertext : " << endl << c << endl;
     F.decrypter()->Decrypt(pt, c);
     cout << "Plaintext : " << pt << endl;
-
 
     return 0;
 }

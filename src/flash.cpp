@@ -13,15 +13,45 @@ Flash::~Flash()
     if(key_generator_ != nullptr) delete key_generator_;
 }
 
-
+/*
 void Flash::InitParams()
 {
+    // Default Parameters
     PtextMod p(2);
     PolyDegree n(1024);
     NoiseBound B(1);
     CtextMod q(GenPrime_ZZ(20));
 
+    if(param_generator_ != nullptr) delete param_generator_;
     param_generator_ = new ParamGen(B, p, q, n, MonomialPlusOne);
+}
+*/
+
+void Flash::InitParams(ParamType type)
+{
+    if(type == Toy)
+    {
+        PtextMod p(2);
+        PolyDegree n(64);
+        NoiseBound B(1);
+        CtextMod q(GenPrime_ZZ(10));
+        InitParams(B, p, q, n, MonomialPlusOne);
+    }
+    else if(type == Secure)
+    {
+        PtextMod p(2);
+        PolyDegree n(2*GenGermainPrime_long(10)+1);     // Safe Prime, due to Subfield Attack
+        NoiseBound B(1);
+        CtextMod q(GenPrime_ZZ(30));
+
+    }
+}
+
+void Flash::InitParams(NoiseBound B, PtextMod p, CtextMod q, PolyDegree n, PolyType t)
+{
+    if(param_generator_ != nullptr)
+        delete param_generator_;
+    param_generator_ = new ParamGen(B, p, q, n, t);
 }
 
 void Flash::InitKeys()

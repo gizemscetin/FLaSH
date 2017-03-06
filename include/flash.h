@@ -8,13 +8,18 @@
 
 using namespace NTL;
 
+enum ParamType {Toy, Secure};
+
 class Flash
 {
     public:
         Flash();
         virtual ~Flash();
 
-        void InitParams();
+        //void InitParams();
+        void InitParams(ParamType type);
+        void InitParams(NoiseBound B, PtextMod p, CtextMod q, PolyDegree n, PolyType t);
+
         void InitKeys();
         void InitCrypter();
 
