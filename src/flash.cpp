@@ -13,37 +13,22 @@ Flash::~Flash()
     if(key_generator_ != nullptr) delete key_generator_;
 }
 
-/*
-void Flash::InitParams()
+void Flash::InitParams(ParamType type, PtextMod p, NoiseBound B, CircuitDepth d)
 {
-    // Default Parameters
-    PtextMod p(2);
-    PolyDegree n(1024);
-    NoiseBound B(1);
-    CtextMod q(GenPrime_ZZ(20));
-
-    if(param_generator_ != nullptr) delete param_generator_;
-    param_generator_ = new ParamGen(B, p, q, n, MonomialPlusOne);
-}
-*/
-
-void Flash::InitParams(ParamType type)
-{
-    if(type == Toy)
+    if(type == Test)
     {
-        PtextMod p(2);
-        PolyDegree n(64);
-        NoiseBound B(1);
-        CtextMod q(GenPrime_ZZ(10));
+        PolyDegree n(27);
+        CtextMod q(GenPrime_ZZ(8));
         InitParams(B, p, q, n, MonomialPlusOne);
+        // Check if the coeff size is big enough to handle
+        // the final noise wrt given circuit depth.
+        param_generator_.FindSmallestCoeffMod(d);
     }
     else if(type == Secure)
     {
-        PtextMod p(2);
-        PolyDegree n(2*GenGermainPrime_long(10)+1);     // Safe Prime, due to Subfield Attack
-        NoiseBound B(1);
+        PolyDegree n(2*GenGermainPrime_long(9)+1);     // Safe Prime, due to Subfield Attack
         CtextMod q(GenPrime_ZZ(30));
-
+        InitParams(B, p, q, n, MonomialPlusOne);
     }
 }
 

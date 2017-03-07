@@ -9,7 +9,7 @@ using namespace NTL;
 int main()
 {
     Flash F;
-    F.InitParams(Toy);
+    F.InitParams();
     F.InitKeys();
     F.InitCrypter();
 
