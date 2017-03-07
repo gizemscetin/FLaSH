@@ -24,7 +24,11 @@ class ParamGen
         const Ring& ptext_ring() const { return ptext_ring_; };
         const Ring& key_ring() const { return key_ring_; };
 
-        // Check Security?
+        // Check security?
+
+        // Given circuit depth, check noise growth?
+        void FindSmallestCoeffMod(CircuitDepth d);
+        void ComputeNorm(CircuitDepth d);
 
 
     protected:

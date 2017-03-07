@@ -8,7 +8,8 @@
 
 using namespace NTL;
 
-enum ParamType {Toy, Secure};
+enum ParamType {Test, Secure};
+typedef int CircuitDepth;
 
 class Flash
 {
@@ -16,8 +17,7 @@ class Flash
         Flash();
         virtual ~Flash();
 
-        //void InitParams();
-        void InitParams(ParamType type);
+        void InitParams(ParamType type = Test, PtextMod p = to_ZZ(2), NoiseBound B = to_ZZ(1), CircuitDepth d = 0);
         void InitParams(NoiseBound B, PtextMod p, CtextMod q, PolyDegree n, PolyType t);
 
         void InitKeys();
