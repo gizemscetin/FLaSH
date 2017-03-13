@@ -8,8 +8,8 @@
 
 using namespace NTL;
 
-enum ParamType {Test, Secure};
-typedef int CircuitDepth;
+
+
 
 class Flash
 {
