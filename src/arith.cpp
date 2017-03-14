@@ -103,11 +103,13 @@ void PolyReduceCoeff(ZZX &out, const ZZX &in, int mod)
 {
     PolyReduceCoeff(out, in, to_ZZ(mod));
 }
+
 void PolyReduceCoeff(ZZX &out, const ZZX &in, const ZZ &mod)
 {
     ZZ_p::init(mod);
 	out = to_ZZX(to_ZZ_pX(in));
 }
+
 void PolyBalanceCoeff(ZZX &out, const ZZX &in, const ZZ &mod)
 {
     PolyReduceCoeff(out, in, mod);
@@ -118,7 +120,6 @@ void PolyBalanceCoeff(ZZX &out, const ZZX &in, const ZZ &mod)
     }
     out.normalize();
 }
-
 
 void PolyInit(ZZX &out, int degree, PolyType type)
 {

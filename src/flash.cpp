@@ -13,22 +13,37 @@ Flash::~Flash()
     if(key_generator_ != nullptr) delete key_generator_;
 }
 
+
+/*
+** Default values:
+** type = Test,
+** p = to_ZZ(2),
+** B = to_ZZ(1),
+** d = 0
+*/
 void Flash::InitParams(ParamType type, PtextMod p, NoiseBound B, CircuitDepth d)
 {
     if(type == Test)
     {
-        PolyDegree n(27);
-        CtextMod q(GenPrime_ZZ(8));
+        PolyDegree n(27);               // small degree for testing
+        CtextMod q(GenPrime_ZZ(8));     // small coefficients for faster arithmetic
         InitParams(B, p, q, n, MonomialPlusOne);
         // Check if the coeff size is big enough to handle
         // the final noise wrt given circuit depth.
-        param_generator_.FindSmallestCoeffMod(d);
+        param_generator_->FindSmallestCoeffMod(d);
     }
     else if(type == Secure)
     {
         PolyDegree n(2*GenGermainPrime_long(9)+1);     // Safe Prime, due to Subfield Attack
-        CtextMod q(GenPrime_ZZ(30));
+        CtextMod q(GenPrime_ZZ(8));
         InitParams(B, p, q, n, MonomialPlusOne);
+
+        // Check if the coeff size is big enough to handle
+        // the final noise wrt given circuit depth.
+        param_generator_->FindSmallestCoeffMod(d);
+
+        // Check if it is secure with the new q
+        //param_generator_.CheckSecurity();
     }
 }
 
