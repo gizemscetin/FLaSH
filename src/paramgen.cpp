@@ -1,9 +1,5 @@
 #include "paramgen.h"
 
-//ParamGen::ParamGen()
-//{
-    //ctor
-//}
 ParamGen::ParamGen(FheType fhe, ParamType type, PtextMod ptext_mod, NoiseBound noise_bound, CircuitDepth d)
 {
     if(type == Test)
@@ -97,6 +93,10 @@ long ParamGen::FindSmallestCoeffMod(CircuitDepth d, double std_dev, int add_coun
     }
     return 0;
 }
+/*
+B0fa(n,q,K,B,mu)=mu*((sqrt(n)*aa*B^2 + SM*n*B*w*((SM+1)*B+1)*lq)*K + sqrt(n)*SM*(SM*B+1))
+Bia(n,Bim,q,K,B,mu)=mu*((sqrt(n)*aa*Bim^2+SM*n*B*w*((SM+1)*B+1)*lq)*K+sqrt(n)*SM*(SM*B+1))
+*/
 
 long ParamGen::ComputeNoiseNoEval()
 {
@@ -108,10 +108,6 @@ long ParamGen::ComputeNoiseNoEval()
     long B = to_long(noise_ring().coeff_mod);
     return SqrRoot(n)*p*(pow(B,2)) + SqrRoot(n)*(pow((p*B),2)) + p*B + (pow(p,2))*B + p;
 }
-/*
-B0fa(n,q,K,B,mu)=mu*((sqrt(n)*aa*B^2 + SM*n*B*w*((SM+1)*B+1)*lq)*K + sqrt(n)*SM*(SM*B+1))
-Bia(n,Bim,q,K,B,mu)=mu*((sqrt(n)*aa*Bim^2+SM*n*B*w*((SM+1)*B+1)*lq)*K+sqrt(n)*SM*(SM*B+1))
-*/
 
 long ParamGen::ComputeNoise(double noise, double pi, double beta, double nu, double kappa, double tau, double omega, double adds, double err)
 {

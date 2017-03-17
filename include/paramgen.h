@@ -1,7 +1,6 @@
 #ifndef PARAMGEN_H
 #define PARAMGEN_H
 
-
 #include <NTL/ZZ.h>
 #include <NTL/ZZX.h>
 #include "arith.h"
