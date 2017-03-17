@@ -9,19 +9,16 @@
 using namespace NTL;
 
 
-
-
 class Flash
 {
     public:
         Flash();
         virtual ~Flash();
 
-        void InitParams(ParamType type = Test, PtextMod p = to_ZZ(2), NoiseBound B = to_ZZ(1), CircuitDepth d = 0);
-        void InitParams(NoiseBound B, PtextMod p, CtextMod q, PolyDegree n, PolyType t);
-
+        void InitParams(ParamType type = Test, FheType fhe = flattened, PtextMod p = to_ZZ(2), NoiseBound B = to_ZZ(1), CircuitDepth d = 0);
         void InitKeys();
         void InitCrypter();
+        void Evaluator();
 
         //void GetKeys();
         //void PrintKeys();
