@@ -1,24 +1,28 @@
 #ifndef PARAMGEN_H
 #define PARAMGEN_H
 
-
 #include <NTL/ZZ.h>
 #include <NTL/ZZX.h>
 #include "arith.h"
 
 using namespace NTL;
 
+enum FheType {leveled, flattened};
 enum ParamType {Test, Secure};
 typedef int CircuitDepth;
 
 class ParamGen
 {
     public:
-        ParamGen();
+        //ParamGen();
         virtual ~ParamGen();
 
-        ParamGen(NoiseBound noise_bound, PtextMod ptext_mod, CtextMod ctext_mod, PolyMod poly_mod);
-        ParamGen(NoiseBound noise_bound, PtextMod ptext_mod, CtextMod ctext_mod, PolyDegree deg, PolyType type, int ptext_count = 1);
+        ParamGen(FheType fhe, ParamType type, PtextMod ptext_mod, NoiseBound noise_bound, CircuitDepth d);
+        //ParamGen(NoiseBound noise_bound, PtextMod ptext_mod, CtextMod ctext_mod, PolyMod poly_mod);
+        //ParamGen(FheType fhe, NoiseBound noise_bound, PtextMod ptext_mod, CtextMod ctext_mod, PolyDegree deg, PolyType type, int ptext_count = 1);
+
+        void set_rings(NoiseBound noise_bound, PtextMod ptext_mod, CtextMod ctext_mod, PolyDegree deg, PolyType type);
+        void set_rings(NoiseBound noise_bound, PtextMod ptext_mod, CtextMod ctext_mod, PolyMod poly_mod);
 
         const Ring& ctext_ring() const { return ctext_ring_; };
         const Ring& noise_ring() const { return noise_ring_; };
