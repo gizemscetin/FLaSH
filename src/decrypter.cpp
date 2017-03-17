@@ -25,6 +25,12 @@ void Decrypter::Decrypt(Plaintext &ptext, const Ciphertext &ctext) const
     PolyReduceCoeff(ptext, ptext, ptext_mod_);
 }
 
+void Decrypter::Decrypt(Plaintext &ptext, const CiphertextArray &ctext) const
+{
+    // Decrypt the first ciphertext in the vector
+    Decrypt(ptext, ctext[0]);
+}
+
 Decrypter::~Decrypter()
 {
     //dtor

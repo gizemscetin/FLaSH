@@ -1,5 +1,22 @@
 #include "arith.h"
 
+int BlockLength(ZZ in, ZZ block_size)
+{
+    return ceil(log(in)/log(block_size));
+}
+int BlockLength(int in, int block_size)
+{
+    return ceil(log(in)/log(block_size));
+}
+int BitLength(ZZ in)
+{
+    return ceil(log(in)/log(2.0));
+}
+int BitLength(int in)
+{
+    return ceil(log(in)/log(2.0));
+}
+
 void PolySample(ZZX &poly, const Ring &r)
 {
     clear(poly);
@@ -47,6 +64,14 @@ void PolyAddPoly(ZZX &out, const ZZX &in1, const ZZX &in2, const Ring &r)
 	ZZ_pX temp2(to_ZZ_pX(in2));
 	temp1 += temp2;
 	out = to_ZZX(temp1);
+}
+void PolyAddPoly(vec_ZZX &out, const vec_ZZX &in1, const vec_ZZX &in2, const Ring &r)
+{
+    out.SetLength(in1.length());
+    for(int i=0; i<out.length(); i++)
+    {
+        PolyAddPoly(out[i], in1[i], in2[i], r);
+    }
 }
 
 void PolyMultScalar(ZZX &out, const ZZX &in1, int in2, const Ring &r)
@@ -130,6 +155,20 @@ void PolyInit(ZZX &out, int degree, PolyType type)
         out[0] = -1;
 }
 
+/*
+** Given p(x), this function returns
+** p(x), 2p(x), 4p(x), 8p(x), ...
+*/
+
+void PolyPowersOfTwo(vec_ZZX &out, const ZZX &in, int cnt)
+{
+    ZZ factor(1);
+    for(int i=0; i<cnt; i++)
+    {
+        out.append(in*factor);
+        factor *= 2;
+    }
+}
 
 
 

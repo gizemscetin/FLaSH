@@ -10,17 +10,18 @@ using namespace NTL;
 
 typedef ZZX Plaintext;
 typedef ZZX Ciphertext;
-typedef vector<Plaintext> PlaintextArray;
-typedef vector<Ciphertext> CiphertextArray;
+typedef vec_ZZX PlaintextArray;
+typedef vec_ZZX CiphertextArray;
 
 class Encrypter
 {
     public:
-        Encrypter();
         virtual ~Encrypter();
         Encrypter(const PtextMod &ptext_mod, const Ring &ctext_ring, const Ring &noise_ring, const PublicKey &public_key);
 
         void Encrypt(Ciphertext &ctext, const Plaintext &ptext) const;
+        void Encrypt(CiphertextArray &ctext, const Plaintext &ptext, int block_count) const;
+        void GetZeroEncryptions(CiphertextArray &out, int enc_count) const;
 
     protected:
 

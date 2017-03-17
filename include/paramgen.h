@@ -10,6 +10,7 @@ using namespace NTL;
 enum FheType {leveled, flattened};
 enum ParamType {Test, Secure};
 typedef int CircuitDepth;
+typedef int Radix;
 
 class ParamGen
 {
@@ -44,6 +45,8 @@ class ParamGen
         Ring noise_ring_;   // Z_B/Phi(x)
         Ring ptext_ring_;   // Z_p/x^k -> where k depends on the ptext encoding
         Ring key_ring_;     // Z_q/Phi(x)
+
+        Radix block_size_;
 };
 
 #endif // PARAMGEN_H

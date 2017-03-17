@@ -8,6 +8,8 @@ ParamGen::ParamGen(FheType fhe, ParamType type, PtextMod ptext_mod, NoiseBound n
         CtextMod q(GenPrime_ZZ(8));                     // small coefficients for faster arithmetic
         set_rings(noise_bound, ptext_mod, q, n, MonomialPlusOne);
         FindSmallestCoeffMod(d);                        // check if q is large enough to handle the noise
+
+        block_size_ = 2;
     }
     else if(fhe == leveled)
     {
@@ -22,6 +24,8 @@ ParamGen::ParamGen(FheType fhe, ParamType type, PtextMod ptext_mod, NoiseBound n
         CtextMod q(GenPrime_ZZ(142));
         set_rings(noise_bound, ptext_mod, q, n, MonomialPlusOne);
         FindSmallestCoeffMod(d);
+
+        block_size_ = 1 << 16;
 
         // To do : for secure fntru change the error distributions
         // In Section 5 of https://eprint.iacr.org/2016/315.pdf
@@ -75,8 +79,8 @@ long ParamGen::FindSmallestCoeffMod(CircuitDepth d, double std_dev, int add_coun
     // fc max norm should be smaller than q/2 to prevent wrap around
     if(d == 0)
     {
-        long noise_length = ceil(log(ComputeNoiseNoEval())/log(2.0));
-        long noise_capacity = ceil(log(ctext_ring().coeff_mod)/log(2.0)) - 1;
+        long noise_length = BitLength(ComputeNoiseNoEval());
+        long noise_capacity = BitLength(ctext_ring().coeff_mod) - 1;
         cout << "Noise capacity : " << noise_length << "/" << noise_capacity << endl;
 
         if(noise_length >= noise_capacity)
@@ -89,7 +93,7 @@ long ParamGen::FindSmallestCoeffMod(CircuitDepth d, double std_dev, int add_coun
 
             cout << "New capacity : " << noise_length << "/" << noise_capacity << endl;
         }
-        return ceil(log(ctext_ring().coeff_mod)/log(2.0));  // q bit length
+        return BitLength(ctext_ring().coeff_mod);  // q bit length
     }
     return 0;
 }

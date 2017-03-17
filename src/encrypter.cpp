@@ -1,10 +1,5 @@
 #include "encrypter.h"
 
-Encrypter::Encrypter()
-{
-    //ctor
-}
-
 Encrypter::Encrypter(const PtextMod &ptext_mod, const Ring &ctext_ring, const Ring &noise_ring, const PublicKey &public_key)
 {
     ptext_mod_ = ptext_mod;
@@ -35,4 +30,22 @@ void Encrypter::Encrypt(Ciphertext &ctext, const Plaintext &ptext) const
     PolyMultScalar(temp, temp, ptext_mod_, ctext_ring_);    // pe
     PolyAddPoly(temp, ctext, temp, ctext_ring_);            // hs + pe
     PolyAddPoly(ctext, ctext, ptext, ctext_ring_);          // hs + pe + m
+}
+
+void Encrypter::Encrypt(CiphertextArray &ctext, const Plaintext &ptext, int block_count) const
+{
+    GetZeroEncryptions(ctext, block_count);
+    PlaintextArray temp;
+    PolyPowersOfTwo(temp, ptext, block_count);
+    PolyAddPoly(ctext, ctext, temp, ctext_ring_);
+}
+
+void Encrypter::GetZeroEncryptions(CiphertextArray &out, int enc_count) const
+{
+    for(int i=0; i<enc_count; i++)
+    {
+        Ciphertext temp;
+        Encrypt(temp, Plaintext(0));
+        out.append(temp);
+    }
 }

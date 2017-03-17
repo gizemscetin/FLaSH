@@ -1,10 +1,5 @@
 #include "flash.h"
 
-Flash::Flash()
-{
-
-}
-
 Flash::~Flash()
 {
     if(encrypter_ != nullptr) delete encrypter_;
@@ -22,11 +17,11 @@ Flash::~Flash()
 ** B = to_ZZ(1),
 ** d = 0
 */
-void Flash::InitParams(ParamType type, FheType fhe, PtextMod p, NoiseBound B, CircuitDepth d)
+void Flash::InitParams(ParamType type, PtextMod p, NoiseBound B, CircuitDepth d)
 {
     if(param_generator_ != nullptr)
         delete param_generator_;
-    param_generator_ = new ParamGen(fhe, type, p, B, d);
+    param_generator_ = new ParamGen(fhe_type_, type, p, B, d);
 }
 
 void Flash::InitKeys()
@@ -76,4 +71,21 @@ void Flash::Evaluator()
         return;
     }
 
+}
+
+void Flash::Encrypt(Ciphertext &ctext, const Plaintext &ptext)
+{
+    encrypter_->Encrypt(ctext, ptext);
+}
+void Flash::Encrypt(FntruCiphertext &ctext, const Plaintext &ptext, int block_count)
+{
+    encrypter_->Encrypt(ctext, ptext, block_count);
+}
+void Flash::Decrypt(Plaintext &ptext, const Ciphertext &ctext)
+{
+    decrypter_->Decrypt(ptext, ctext);
+}
+void Flash::Decrypt(Plaintext &ptext, const FntruCiphertext &ctext)
+{
+    decrypter_->Decrypt(ptext, ctext);
 }
