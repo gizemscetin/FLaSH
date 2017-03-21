@@ -156,12 +156,13 @@ void PolyInit(ZZX &out, int degree, PolyType type)
 }
 
 /*
-** Given p(x), this function returns
+** Given p(x), this function returns:
 ** p(x), 2p(x), 4p(x), 8p(x), ...
 */
 
 void PolyPowersOfTwo(vec_ZZX &out, const ZZX &in, int cnt)
 {
+    out.kill();
     ZZ factor(1);
     for(int i=0; i<cnt; i++)
     {
@@ -171,6 +172,52 @@ void PolyPowersOfTwo(vec_ZZX &out, const ZZX &in, int cnt)
 }
 
 
+/*
+** Given p(x) = a0 + a1x + ... ,
+** this function returns:
+** p0(x) = a00 + a10x + ...
+** p1(x) = a01 + a11x + ...
+** p2(x) = a02 + a12x + ...
+** where aij is j'th bit of coefficient ai
+*/
+void PolyBlockDecompose(vec_ZZX &out, const ZZX &in, int block_cnt, int block_size)
+{
+    out.SetLength(block_cnt);
+
+    int coeff_cnt = deg(in) + 1;
+    for(int i=0; i<coeff_cnt; i++)
+    {
+        ZZ temp_coeff = in[i];
+        for(int j=0; j<block_cnt; j++)
+        {
+            SetCoeff(out[j], i, temp_coeff%block_size);
+            temp_coeff = temp_coeff/block_size;
+        }
+    }
+}
+
+void PolyBlockDecomposeInverse(ZZX &out, const vec_ZZX &in, int block_size)
+{
+    clear(out);
+    ZZ factor(1);
+    for(int i=0; i<in.length(); i++)
+    {
+        out += (in[i]*factor);
+        factor *= block_size;
+    }
+}
+
+void PolyVectorDotProduct(ZZX &out, const vec_ZZX &in1, const vec_ZZX &in2, const Ring &r)
+{
+    clear(out);
+    int poly_count = in1.length();
+    for(int i=0; i<poly_count; i++)
+    {
+        ZZX temp;
+        PolyMultPoly(temp, in1[i], in2[i], r);
+        PolyAddPoly(out, out, temp, r);
+    }
+}
 
 
 

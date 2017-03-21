@@ -20,6 +20,7 @@ class Encrypter
         Encrypter(const PtextMod &ptext_mod, const Ring &ctext_ring, const Ring &noise_ring, const PublicKey &public_key);
 
         void Encrypt(Ciphertext &ctext, const Plaintext &ptext) const;
+        void Encrypt(CiphertextArray &ctext, const PlaintextArray &ptext) const;
         void Encrypt(CiphertextArray &ctext, const Plaintext &ptext, int block_count) const;
         void GetZeroEncryptions(CiphertextArray &out, int enc_count) const;
 

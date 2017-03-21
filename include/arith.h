@@ -53,5 +53,10 @@ void PolyInit(ZZX &out, int degree, PolyType type);
 
 void PolyPowersOfTwo(vec_ZZX &out, const ZZX &in, int cnt);
 
+void PolyBlockDecompose(vec_ZZX &out, const ZZX &in, int block_cnt, int block_size = 2);
+void PolyBlockDecomposeInverse(ZZX &out, const vec_ZZX &in, int block_size = 2);
+
+void PolyVectorDotProduct(ZZX &out, const vec_ZZX &in1, const vec_ZZX &in2, const Ring &r);
+
 
 #endif // ARITH_H

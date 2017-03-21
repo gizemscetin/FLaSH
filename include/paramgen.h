@@ -30,6 +30,9 @@ class ParamGen
         const Ring& ptext_ring() const { return ptext_ring_; };
         const Ring& key_ring() const { return key_ring_; };
 
+        const int& block_count() const { return block_count_; };
+        const int& block_size() const { return block_size_; };
+
         // Check security?
 
         // Given circuit depth, check noise growth?
@@ -46,7 +49,8 @@ class ParamGen
         Ring ptext_ring_;   // Z_p/x^k -> where k depends on the ptext encoding
         Ring key_ring_;     // Z_q/Phi(x)
 
-        Radix block_size_;
+        Radix block_size_;  // 2^16 in practice
+        int block_count_;   // ceil(log(q)/log(block size))
 };
 
 #endif // PARAMGEN_H

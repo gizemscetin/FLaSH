@@ -32,6 +32,12 @@ void Encrypter::Encrypt(Ciphertext &ctext, const Plaintext &ptext) const
     PolyAddPoly(ctext, ctext, ptext, ctext_ring_);          // hs + pe + m
 }
 
+void Encrypter::Encrypt(CiphertextArray &ctext, const PlaintextArray &ptext) const
+{
+    GetZeroEncryptions(ctext, ptext.length());
+    PolyAddPoly(ctext, ctext, ptext, ctext_ring_);
+}
+
 void Encrypter::Encrypt(CiphertextArray &ctext, const Plaintext &ptext, int block_count) const
 {
     GetZeroEncryptions(ctext, block_count);

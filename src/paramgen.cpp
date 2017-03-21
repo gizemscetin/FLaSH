@@ -5,7 +5,7 @@ ParamGen::ParamGen(FheType fhe, ParamType type, PtextMod ptext_mod, NoiseBound n
     if(type == Test)
     {
         PolyDegree n(27);                               // Small degree for testing
-        CtextMod q(GenPrime_ZZ(8));                     // small coefficients for faster arithmetic
+        CtextMod q(GenPrime_ZZ(30));                     // small coefficients for faster arithmetic
         set_rings(noise_bound, ptext_mod, q, n, MonomialPlusOne);
         FindSmallestCoeffMod(d);                        // check if q is large enough to handle the noise
 
@@ -17,6 +17,8 @@ ParamGen::ParamGen(FheType fhe, ParamType type, PtextMod ptext_mod, NoiseBound n
         CtextMod q(GenPrime_ZZ(10));                         // small coefficients for faster arithmetic
         set_rings(noise_bound, ptext_mod, q, n, MonomialPlusOne);
         // To do : for leveled there must be a list of values -> {q^{d+1}, q^{d}, ..., q^2, q}
+
+        block_size_ = 1 << 16;
     }
     else
     {
@@ -31,6 +33,7 @@ ParamGen::ParamGen(FheType fhe, ParamType type, PtextMod ptext_mod, NoiseBound n
         // In Section 5 of https://eprint.iacr.org/2016/315.pdf
         // sigma_key and sigma_err
     }
+    block_count_ = ceil(BitLength(ctext_ring().coeff_mod)/BitLength(block_size_));
 }
 
 /*

@@ -26,13 +26,29 @@ class Flash
         //void TestKeys();
         //void SetKeys();
 
+        void Encrypt(CiphertextArray &ctext, int byte_message);
         void Encrypt(Ciphertext &ctext, const Plaintext &ptext);
-        void Encrypt(FntruCiphertext &ctext, const Plaintext &ptext, int block_count = 1);
+        void Encrypt(FntruCiphertext &ctext, const Plaintext &ptext);
         void Decrypt(Plaintext &ptext, const Ciphertext &ctext);
+        void Decrypt(PlaintextArray &ptext, const CiphertextArray &ctext);
         void Decrypt(Plaintext &ptext, const FntruCiphertext &ctext);
 
-        //const Encrypter* encrypter() const { return encrypter_;};
-        //const Decrypter* decrypter() const { return decrypter_;};
+        void AND(FntruCiphertext &out, const FntruCiphertext &in1, const FntruCiphertext &in2);
+        void AND(Ciphertext &out, const Ciphertext &in1, const FntruCiphertext &in2);
+
+        void XOR(FntruCiphertext &out, const FntruCiphertext &in1, const FntruCiphertext &in2);
+        void XOR(Ciphertext &out, const Ciphertext &in1, const FntruCiphertext &in2);
+
+        void NOT(FntruCiphertext &out, const FntruCiphertext &in1);
+        void NOT(Ciphertext &out, const Ciphertext &in1);
+
+        void EQ(Ciphertext &out, const Ciphertext &in1, const Ciphertext &in2);
+        void EQ(Ciphertext &out, const FntruCiphertext &in1, const FntruCiphertext &in2);
+
+
+        const Encrypter* encrypter() const { return encrypter_;};
+        const Decrypter* decrypter() const { return decrypter_;};
+        const ParamGen* param_generator() const { return param_generator_;};
 
     protected:
 
