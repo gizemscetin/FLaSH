@@ -12,6 +12,7 @@ typedef ZZX Plaintext;
 typedef ZZX Ciphertext;
 typedef vec_ZZX PlaintextArray;
 typedef vec_ZZX CiphertextArray;
+typedef vector<CiphertextArray> CiphertextMatrix;
 
 class Encrypter
 {
@@ -22,6 +23,7 @@ class Encrypter
         void Encrypt(Ciphertext &ctext, const Plaintext &ptext) const;
         void Encrypt(CiphertextArray &ctext, const PlaintextArray &ptext) const;
         void Encrypt(CiphertextArray &ctext, const Plaintext &ptext, int block_count) const;
+        void Encrypt(CiphertextMatrix &ctext, const PlaintextArray &ptext, int block_count) const;
         void GetZeroEncryptions(CiphertextArray &out, int enc_count) const;
 
     protected:

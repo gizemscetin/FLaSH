@@ -46,6 +46,17 @@ void Encrypter::Encrypt(CiphertextArray &ctext, const Plaintext &ptext, int bloc
     PolyAddPoly(ctext, ctext, temp, ctext_ring_);
 }
 
+void Encrypter::Encrypt(CiphertextMatrix &ctext, const PlaintextArray &ptext, int block_count) const
+{
+    ctext.clear();
+    for(int i=0; i<ptext.length(); i++)
+    {
+        CiphertextArray temp;
+        Encrypt(temp, ptext[i], block_count);
+        ctext.push_back(temp);
+    }
+}
+
 void Encrypter::GetZeroEncryptions(CiphertextArray &out, int enc_count) const
 {
     for(int i=0; i<enc_count; i++)

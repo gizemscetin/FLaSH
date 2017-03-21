@@ -37,11 +37,16 @@ void PolySampleBalanced(ZZX &poly, const Ring &r);
 
 void PolyAddScalar(ZZX &out, const ZZX &in1, int in2, const Ring &r);
 void PolyAddScalar(ZZX &out, const ZZX &in1, const ZZ &in2, const Ring &r);
+
 void PolyAddPoly(ZZX &out, const ZZX &in1, const ZZX &in2, const Ring &r);
 void PolyAddPoly(vec_ZZX &out, const vec_ZZX &in1, const vec_ZZX &in2, const Ring &r);
 
 void PolyMultScalar(ZZX &out, const ZZX &in1, int in2, const Ring &r);
 void PolyMultScalar(ZZX &out, const ZZX &in1, const ZZ &in2, const Ring &r);
+
+void PolyShiftLeft(ZZX &out, const ZZX &in, int shift_amount, const Ring &r);
+void PolyShiftLeft(vec_ZZX &out, const vec_ZZX &in, int shift_amount, const Ring &r);
+
 void PolyMultPoly(ZZX &out, const ZZX &in1, const ZZX &in2, const Ring &r);
 bool PolyInverse(ZZX &out, const ZZX &in, const Ring &r);
 

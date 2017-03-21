@@ -84,14 +84,24 @@ void Flash::Encrypt(Ciphertext &ctext, const Plaintext &ptext)
 {
     encrypter_->Encrypt(ctext, ptext);
 }
+
 void Flash::Encrypt(FntruCiphertext &ctext, const Plaintext &ptext)
 {
     encrypter_->Encrypt(ctext, ptext, param_generator_->block_count());
 }
+
+void Flash::Encrypt(FntruCiphertextArray &ctext, int byte_message)
+{
+    PlaintextArray ptext;
+    PolyBlockDecompose(ptext, to_ZZX(byte_message), 8);
+    encrypter_->Encrypt(ctext, ptext, param_generator_->block_count());
+}
+
 void Flash::Decrypt(Plaintext &ptext, const Ciphertext &ctext)
 {
     decrypter_->Decrypt(ptext, ctext);
 }
+
 void Flash::Decrypt(PlaintextArray &ptext, const CiphertextArray &ctext)
 {
     ptext.SetLength(ctext.length());
@@ -100,11 +110,20 @@ void Flash::Decrypt(PlaintextArray &ptext, const CiphertextArray &ctext)
         decrypter_->Decrypt(ptext[i], ctext[i]);
     }
 }
+
 void Flash::Decrypt(Plaintext &ptext, const FntruCiphertext &ctext)
 {
     decrypter_->Decrypt(ptext, ctext);
 }
 
+void Flash::Decrypt(PlaintextArray &ptext, const FntruCiphertextArray &ctext)
+{
+    ptext.SetLength(ctext.size());
+    for(int i=0; i<ptext.length(); i++)
+    {
+        decrypter_->Decrypt(ptext[i], ctext[i]);
+    }
+}
 
 void Flash::AND(FntruCiphertext &out, const FntruCiphertext &in1, const FntruCiphertext &in2)
 {
@@ -155,16 +174,70 @@ void Flash::NOT(Ciphertext &out, const Ciphertext &in)
 }
 
 
-void Flash::EQ(Ciphertext &out, const Ciphertext &in1, const Ciphertext &in2)
+void Flash::EQ(Ciphertext &out, const Ciphertext &in1, const FntruCiphertext &in2)
 {
     XOR(out, in1, in2);
     NOT(out, out);
 }
 
-void Flash::EQ(Ciphertext &out, const FntruCiphertext &in1, const FntruCiphertext &in2)
+void Flash::EQ(FntruCiphertext &out, const FntruCiphertext &in1, const FntruCiphertext &in2)
 {
     XOR(out, in1, in2);
     NOT(out, out);
 }
 
+void Flash::EQ(FntruCiphertext &out, const FntruCiphertextArray &in1, const FntruCiphertextArray &in2)
+{
+    int cnt = in1.size();
+    EQ(out, in1[0], in2[0]);
+    for(int i=1; i<cnt; i++)
+    {
+        FntruCiphertext temp;
+        EQ(temp, in1[i], in2[i]);
+        AND(out, out, temp);
+    }
+}
+
+void Flash::LT(Ciphertext &out, const Ciphertext &in1, const FntruCiphertext &in2)
+{
+    NOT(out, in1);
+    AND(out, out, in2);
+}
+
+void Flash::LT(FntruCiphertext &out, const FntruCiphertext &in1, const FntruCiphertext &in2)
+{
+    NOT(out, in1);
+    AND(out, out, in2);
+}
+
+void Flash::LT(FntruCiphertext &out, const FntruCiphertextArray &in1, const FntruCiphertextArray &in2)
+{
+    if(in1.empty() || in2.empty())
+        return;
+
+    LT(out, in1.back(), in2.back());
+
+    FntruCiphertext temp_out;
+    FntruCiphertextArray temp1 = in1;
+    FntruCiphertextArray temp2 = in2;
+    temp1.pop_back();
+    temp2.pop_back();
+    LT(temp_out, temp1, temp2);
+
+    FntruCiphertext temp_eq;
+    EQ(temp_eq, in1.back(), in2.back());
+
+    AND(temp_out, temp_out, temp_eq);
+    XOR(out, out, temp_out);
+
+}
+
+void Flash::SXL(FntruCiphertext &out, const FntruCiphertext &in, int shift_amount)
+{
+    out = in;
+    for(int i=0; i<out.length(); i++)
+    {
+        PolyShiftLeft(out, out, shift_amount, param_generator_->ctext_ring());
+    }
+}
 

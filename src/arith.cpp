@@ -78,6 +78,7 @@ void PolyMultScalar(ZZX &out, const ZZX &in1, int in2, const Ring &r)
 {
     PolyMultScalar(out, in1, to_ZZ(in2), r);
 }
+
 void PolyMultScalar(ZZX &out, const ZZX &in1, const ZZ &in2, const Ring &r)
 {
     // Use NTL ZZ_pX multiplication
@@ -85,6 +86,22 @@ void PolyMultScalar(ZZX &out, const ZZX &in1, const ZZ &in2, const Ring &r)
 	ZZ_pX temp(to_ZZ_pX(in1));
 	temp *= to_ZZ_p(in2);
 	out = to_ZZX(temp);
+}
+
+void PolyShiftLeft(ZZX &out, const ZZX &in, int shift_amount, const Ring &r)
+{
+    ZZX poly_x;
+    PolyInit(poly_x, shift_amount, Monomial);
+    PolyMultPoly(out, in, poly_x, r);
+}
+
+void PolyShiftLeft(vec_ZZX &out, const vec_ZZX &in, int shift_amount, const Ring &r)
+{
+    out.SetLength(in.length());
+    for(int i=0; i<in.length(); i++)
+    {
+        PolyShiftLeft(out[i], in[i], shift_amount, r);
+    }
 }
 
 void PolyMultPoly(ZZX &out, const ZZX &in1, const ZZX &in2, const Ring &r)

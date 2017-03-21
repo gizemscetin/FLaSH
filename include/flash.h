@@ -5,10 +5,13 @@
 #include "keygen.h"
 #include "encrypter.h"
 #include "decrypter.h"
+#include "arith.h"
+#include <vector>
 
 using namespace NTL;
 
 typedef CiphertextArray FntruCiphertext;
+typedef vector<FntruCiphertext> FntruCiphertextArray;
 
 class Flash
 {
@@ -28,10 +31,12 @@ class Flash
 
         void Encrypt(CiphertextArray &ctext, int byte_message);
         void Encrypt(Ciphertext &ctext, const Plaintext &ptext);
+        void Encrypt(FntruCiphertextArray &ctext, int byte_message);
         void Encrypt(FntruCiphertext &ctext, const Plaintext &ptext);
         void Decrypt(Plaintext &ptext, const Ciphertext &ctext);
         void Decrypt(PlaintextArray &ptext, const CiphertextArray &ctext);
         void Decrypt(Plaintext &ptext, const FntruCiphertext &ctext);
+        void Decrypt(PlaintextArray &ptext, const FntruCiphertextArray &ctext);
 
         void AND(FntruCiphertext &out, const FntruCiphertext &in1, const FntruCiphertext &in2);
         void AND(Ciphertext &out, const Ciphertext &in1, const FntruCiphertext &in2);
@@ -42,13 +47,21 @@ class Flash
         void NOT(FntruCiphertext &out, const FntruCiphertext &in1);
         void NOT(Ciphertext &out, const Ciphertext &in1);
 
-        void EQ(Ciphertext &out, const Ciphertext &in1, const Ciphertext &in2);
-        void EQ(Ciphertext &out, const FntruCiphertext &in1, const FntruCiphertext &in2);
+        void EQ(Ciphertext &out, const Ciphertext &in1, const FntruCiphertext &in2);
+        void EQ(FntruCiphertext &out, const FntruCiphertext &in1, const FntruCiphertext &in2);
+        void EQ(FntruCiphertext &out, const FntruCiphertextArray &in1, const FntruCiphertextArray &in2);
 
+        void LT(Ciphertext &out, const Ciphertext &in1, const FntruCiphertext &in2);
+        void LT(FntruCiphertext &out, const FntruCiphertext &in1, const FntruCiphertext &in2);
+        void LT(FntruCiphertext &out, const FntruCiphertextArray &in1, const FntruCiphertextArray &in2);
+
+        void SXL(FntruCiphertext &out, const FntruCiphertext &in, int shift_amount=1);
+        void SXL(FntruCiphertextArray &out, const FntruCiphertextArray &in, int shift_amount=1);
 
         const Encrypter* encrypter() const { return encrypter_;};
         const Decrypter* decrypter() const { return decrypter_;};
         const ParamGen* param_generator() const { return param_generator_;};
+        const KeyGen* key_generator() const { return key_generator_;};
 
     protected:
 
