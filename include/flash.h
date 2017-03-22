@@ -56,7 +56,6 @@ class Flash
         void LT(FntruCiphertext &out, const FntruCiphertextArray &in1, const FntruCiphertextArray &in2);
 
         void SXL(FntruCiphertext &out, const FntruCiphertext &in, int shift_amount=1);
-        void SXL(FntruCiphertextArray &out, const FntruCiphertextArray &in, int shift_amount=1);
 
         const Encrypter* encrypter() const { return encrypter_;};
         const Decrypter* decrypter() const { return decrypter_;};

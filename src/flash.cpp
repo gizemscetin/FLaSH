@@ -143,6 +143,7 @@ void Flash::AND(Ciphertext &out, const Ciphertext &in1, const FntruCiphertext &i
     PolyVectorDotProduct(out, in1_blocks, in2, param_generator_->ctext_ring());
 }
 
+
 void Flash::XOR(FntruCiphertext &out, const FntruCiphertext &in1, const FntruCiphertext &in2)
 {
     out.SetLength(param_generator_->block_count());
@@ -234,10 +235,6 @@ void Flash::LT(FntruCiphertext &out, const FntruCiphertextArray &in1, const Fntr
 
 void Flash::SXL(FntruCiphertext &out, const FntruCiphertext &in, int shift_amount)
 {
-    out = in;
-    for(int i=0; i<out.length(); i++)
-    {
-        PolyShiftLeft(out, out, shift_amount, param_generator_->ctext_ring());
-    }
+    PolyShiftLeft(out, in, shift_amount, param_generator_->ctext_ring());
 }
 

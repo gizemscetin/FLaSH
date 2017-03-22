@@ -90,9 +90,9 @@ void PolyMultScalar(ZZX &out, const ZZX &in1, const ZZ &in2, const Ring &r)
 
 void PolyShiftLeft(ZZX &out, const ZZX &in, int shift_amount, const Ring &r)
 {
-    ZZX poly_x;
-    PolyInit(poly_x, shift_amount, Monomial);
-    PolyMultPoly(out, in, poly_x, r);
+    out = in << shift_amount;
+    out = out % r.poly_mod;
+    PolyReduceCoeff(out, out, r.coeff_mod);
 }
 
 void PolyShiftLeft(vec_ZZX &out, const vec_ZZX &in, int shift_amount, const Ring &r)
