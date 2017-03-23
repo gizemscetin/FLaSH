@@ -143,7 +143,96 @@ void TestSort()
     vector<int> m;
     vector<FntruCiphertextArray> ct;
     cout << "Input list : ";
-    for(int i=0; i<10; i++)
+    for(int i=0; i<4; i++)
+    {
+        m.push_back(rand()%256);
+        //m.push_back(i+1);
+        FntruCiphertextArray temp;
+        F.Encrypt(temp, m.back());
+        ct.push_back(temp);
+        cout << m.back() << " ";
+    }
+    cout << endl;
+
+    // Compare a number with every other number
+    FntruMatrix M;
+    for(int i=0; i<m.size(); i++)
+    {
+        FntruVector row(m.size());
+        for(int j=0; j<i; j++)
+        {
+            F.NOT(row[j], M[j][i]);
+        }
+        for(int j=i+1; j<m.size(); j++)
+        {
+            F.LT(row[j], ct[i], ct[j]);
+        }
+        M.push_back(row);
+    }
+
+    FntruMatrix RankPoly(m.size());
+    for(int i=0; i<m.size(); i++)
+    {
+        for(int j=0; j<m.size(); j++)
+        {
+            if (i != j)
+            {
+                FntruCiphertext temp;
+                F.SXL(temp, M[j][i]);
+                F.XOR(temp, temp, M[i][j]);
+                RankPoly[i].push_back(temp);
+            }
+        }
+    }
+
+    FntruVector R(m.size());
+    for(int i=0; i<m.size(); i++)
+    {
+        R[i] = RankPoly[i][0];
+        for(int j=1; j<RankPoly[i].size(); j++)
+        {
+            F.AND(R[i], R[i], RankPoly[i][j]);
+        }
+        for(int j=0; j<ct[i].size(); j++)
+        {
+            F.AND(ct[i][j], ct[i][j], R[i]);
+        }
+    }
+
+    FntruCiphertextArray Y;
+    for(int j=0; j<ct[0].size(); j++)
+    {
+        Y.push_back(ct[0][j]);
+    }
+    for(int i=1; i<ct.size(); i++)
+    {
+        for(int j=0; j<ct[i].size(); j++)
+        {
+            F.XOR(Y[j], Y[j], ct[i][j]);
+        }
+    }
+
+    PlaintextArray pt;
+    F.Decrypt(pt, Y);
+    Plaintext output;
+    PolyBlockDecomposeInverse(output, pt);
+    cout << "Sorted list : " << output << endl;
+}
+
+void TestRank()
+{
+    srand (time(NULL));
+    int input_set_size = 10;
+
+    Flash F;
+    F.InitParams();
+    F.InitKeys();
+    F.InitCrypter();
+
+    vector<int> m;
+    vector<FntruCiphertextArray> ct;
+    cout << "Input list : ";
+    for(int i=0; i<4; i++)
     {
         m.push_back(rand()%256);
         FntruCiphertextArray temp;
@@ -153,31 +242,48 @@ void TestSort()
     }
     cout << endl;
 
-    // Compare the first number with every other number
-    vector<FntruCiphertext> lt;
-    vector<FntruCiphertext> lt_not;
-    for(int i=1; i<m.size(); i++)
+    // Compare a number with every other number
+    FntruMatrix M;
+    for(int i=0; i<m.size(); i++)
     {
-        FntruCiphertext temp;
-        F.LT(temp, ct[0], ct[i]);
-        lt.push_back(temp);
-        F.NOT(temp, temp);
-        lt_not.push_back(temp);
+        FntruVector row(m.size());
+        for(int j=0; j<i; j++)
+        {
+            F.NOT(row[j], M[j][i]);
+        }
+        for(int j=i+1; j<m.size(); j++)
+        {
+            F.LT(row[j], ct[i], ct[j]);
+        }
+        M.push_back(row);
     }
 
-    for(int i=0; i<lt.size(); i++)
+    FntruMatrix RankPoly(m.size());
+    for(int i=0; i<m.size(); i++)
     {
-        F.SXL(lt_not[i], lt_not[i]);
-        F.XOR(lt_not[i], lt_not[i], lt[i]);
+        for(int j=0; j<m.size(); j++)
+        {
+            if (i != j)
+            {
+                FntruCiphertext temp;
+                F.SXL(temp, M[j][i]);
+                F.XOR(temp, temp, M[i][j]);
+                RankPoly[i].push_back(temp);
+            }
+        }
     }
 
-    FntruCiphertext result = lt_not[0];
-    for(int i=1; i<lt.size(); i++)
+    FntruVector Y(m.size());
+    for(int i=0; i<m.size(); i++)
     {
-        F.AND(result, result, lt_not[i]);
-    }
+        Y[i] = RankPoly[i][0];
+        for(int j=1; j<RankPoly[i].size(); j++)
+        {
+            F.AND(Y[i], Y[i], RankPoly[i][j]);
+        }
 
-    Plaintext pt;
-    F.Decrypt(pt, result);
-    cout << "The rank of element " << m[0] << " : " << deg(pt) << endl;
+        Plaintext pt;
+        F.Decrypt(pt, Y[i]);
+        cout << "The rank of element " << m[i] << " : " << deg(pt) << endl;
+    }
 }
