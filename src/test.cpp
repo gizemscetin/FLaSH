@@ -130,7 +130,217 @@ void TestByteLT()
     cout << m1 << " < " << m2 << " : " << pt << endl;
 }
 
-void TestSort()
+void TestSort(ParamType type)
+{
+    srand (time(NULL));
+    time_t start_time, end_time;
+    int input_set_size = 4;
+
+    Flash F;
+    F.InitParams(type);
+    F.InitKeys();
+    F.InitCrypter();
+
+    vector<int> m;
+    vector<FntruCiphertextArray> ct;
+    cout << "Input list : ";
+    for(int i=0; i<input_set_size; i++)
+    {
+        m.push_back(rand()%256);
+        FntruCiphertextArray temp;
+        F.Encrypt(temp, m.back());
+        ct.push_back(temp);
+        cout << m.back() << " ";
+    }
+    cout << endl;
+
+    // Compare a number with every other number
+    start_time = time(NULL);
+    FntruMatrix M;
+    for(int i=0; i<m.size(); i++)
+    {
+        FntruVector row(m.size());
+        for(int j=0; j<i; j++)
+        {
+            F.NOT(row[j], M[j][i]);
+        }
+        for(int j=i+1; j<m.size(); j++)
+        {
+            F.LT(row[j], ct[i], ct[j]);
+        }
+        M.push_back(row);
+    }
+    end_time = time(NULL);
+    cout << "Comparisons are done : " << difftime(end_time, start_time) << endl;
+
+    // Start timer again
+    start_time = time(NULL);
+    FntruMatrix RankPoly(m.size());
+    for(int i=0; i<m.size(); i++)
+    {
+        for(int j=0; j<m.size(); j++)
+        {
+            if (i != j)
+            {
+                FntruCiphertext temp;
+                F.SXL(temp, M[j][i]);
+                F.XOR(temp, temp, M[i][j]);
+                RankPoly[i].push_back(temp);
+            }
+        }
+    }
+    cout << "Shift and Adds are done." << endl;
+
+    FntruVector R(m.size());
+    for(int i=0; i<m.size(); i++)
+    {
+        R[i] = RankPoly[i][0];
+        for(int j=1; j<RankPoly[i].size(); j++)
+        {
+            F.AND(R[i], R[i], RankPoly[i][j]);
+        }
+        for(int j=0; j<ct[i].size(); j++)
+        {
+            F.AND(ct[i][j], ct[i][j], R[i]);
+        }
+    }
+    cout << "Products are done." << endl;
+
+    FntruCiphertextArray Y;
+    for(int j=0; j<ct[0].size(); j++)
+    {
+        Y.push_back(ct[0][j]);
+    }
+    for(int i=1; i<ct.size(); i++)
+    {
+        for(int j=0; j<ct[i].size(); j++)
+        {
+            F.XOR(Y[j], Y[j], ct[i][j]);
+        }
+    }
+    end_time = time(NULL);
+    cout << "Operations are done : " << difftime(end_time, start_time) << " sec." << endl;
+
+    PlaintextArray pt;
+    F.Decrypt(pt, Y);
+    Plaintext output;
+    PolyBlockDecomposeInverse(output, pt);
+    cout << "Sorted list : " << output << endl;
+}
+
+void TestRank()
+{
+    srand (time(NULL));
+    int input_set_size = 10;
+
+    Flash F;
+    F.InitParams();
+    F.InitKeys();
+    F.InitCrypter();
+
+    vector<int> m;
+    vector<FntruCiphertextArray> ct;
+    cout << "Input list : ";
+    for(int i=0; i<4; i++)
+    {
+        m.push_back(rand()%256);
+        FntruCiphertextArray temp;
+        F.Encrypt(temp, m.back());
+        ct.push_back(temp);
+        cout << m.back() << " ";
+    }
+    cout << endl;
+
+    // Compare a number with every other number
+    FntruMatrix M;
+    for(int i=0; i<m.size(); i++)
+    {
+        FntruVector row(m.size());
+        for(int j=0; j<i; j++)
+        {
+            F.NOT(row[j], M[j][i]);
+        }
+        for(int j=i+1; j<m.size(); j++)
+        {
+            F.LT(row[j], ct[i], ct[j]);
+        }
+        M.push_back(row);
+    }
+
+    FntruMatrix RankPoly(m.size());
+    for(int i=0; i<m.size(); i++)
+    {
+        for(int j=0; j<m.size(); j++)
+        {
+            if (i != j)
+            {
+                FntruCiphertext temp;
+                F.SXL(temp, M[j][i]);
+                F.XOR(temp, temp, M[i][j]);
+                RankPoly[i].push_back(temp);
+            }
+        }
+    }
+
+    FntruVector Y(m.size());
+    for(int i=0; i<m.size(); i++)
+    {
+        Y[i] = RankPoly[i][0];
+        for(int j=1; j<RankPoly[i].size(); j++)
+        {
+            F.AND(Y[i], Y[i], RankPoly[i][j]);
+        }
+
+        Plaintext pt;
+        F.Decrypt(pt, Y[i]);
+        cout << "The rank of element " << m[i] << " : " << deg(pt) << endl;
+    }
+}
+
+void TestDirectSort()
+{
+    srand (time(NULL));
+    int input_set_size = 10;
+
+    Flash F;
+    F.InitParams();
+    F.InitKeys();
+    F.InitCrypter();
+
+    vector<int> m;
+    vector<FntruCiphertextArray> ct;
+    cout << "Input list : ";
+    for(int i=0; i<4; i++)
+    {
+        m.push_back(rand()%256);
+        //m.push_back(i+1);
+        FntruCiphertextArray temp;
+        F.Encrypt(temp, m.back());
+        ct.push_back(temp);
+        cout << m.back() << " ";
+    }
+    cout << endl;
+
+    // Compare a number with every other number
+    FntruMatrix M;
+    for(int i=0; i<m.size(); i++)
+    {
+        FntruVector row(m.size());
+        for(int j=0; j<i; j++)
+        {
+            F.NOT(row[j], M[j][i]);
+        }
+        for(int j=i+1; j<m.size(); j++)
+        {
+            F.LT(row[j], ct[i], ct[j]);
+        }
+        M.push_back(row);
+    }
+
+    // Compute Hamming Weight of each column of M
+}
+void TestGreedySort();
+void TestPolyRankSort()
 {
     srand (time(NULL));
     int input_set_size = 10;
@@ -219,10 +429,14 @@ void TestSort()
     cout << "Sorted list : " << output << endl;
 }
 
-void TestRank()
+void TestOddEvenMergeSort()
+{
+
+}
+
+void GetRandomEncryptions(FntruCiphertextArray &out, int base = 256, int count = 1)
 {
     srand (time(NULL));
-    int input_set_size = 10;
 
     Flash F;
     F.InitParams();
@@ -232,7 +446,7 @@ void TestRank()
     vector<int> m;
     vector<FntruCiphertextArray> ct;
     cout << "Input list : ";
-    for(int i=0; i<4; i++)
+    for(int i=0; i<count; i++)
     {
         m.push_back(rand()%256);
         FntruCiphertextArray temp;
@@ -241,49 +455,5 @@ void TestRank()
         cout << m.back() << " ";
     }
     cout << endl;
-
-    // Compare a number with every other number
-    FntruMatrix M;
-    for(int i=0; i<m.size(); i++)
-    {
-        FntruVector row(m.size());
-        for(int j=0; j<i; j++)
-        {
-            F.NOT(row[j], M[j][i]);
-        }
-        for(int j=i+1; j<m.size(); j++)
-        {
-            F.LT(row[j], ct[i], ct[j]);
-        }
-        M.push_back(row);
-    }
-
-    FntruMatrix RankPoly(m.size());
-    for(int i=0; i<m.size(); i++)
-    {
-        for(int j=0; j<m.size(); j++)
-        {
-            if (i != j)
-            {
-                FntruCiphertext temp;
-                F.SXL(temp, M[j][i]);
-                F.XOR(temp, temp, M[i][j]);
-                RankPoly[i].push_back(temp);
-            }
-        }
-    }
-
-    FntruVector Y(m.size());
-    for(int i=0; i<m.size(); i++)
-    {
-        Y[i] = RankPoly[i][0];
-        for(int j=1; j<RankPoly[i].size(); j++)
-        {
-            F.AND(Y[i], Y[i], RankPoly[i][j]);
-        }
-
-        Plaintext pt;
-        F.Decrypt(pt, Y[i]);
-        cout << "The rank of element " << m[i] << " : " << deg(pt) << endl;
-    }
 }
+

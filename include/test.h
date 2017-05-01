@@ -22,7 +22,14 @@ void TestByteEncryptDecrypt();
 void TestByteEQ();
 void TestByteLT();
 
-void TestSort();
+void TestSort(ParamType type = Secure);
 void TestRank();
+void TestDirectSort();
+void TestGreedySort();
+void TestPolyRankSort();
+void TestOddEvenMergeSort();
+
+
+void GetRandomEncryptions(FntruMatrix &out, int base = 256, int count = 1);
 
 #endif

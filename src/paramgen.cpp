@@ -22,12 +22,12 @@ ParamGen::ParamGen(FheType fhe, ParamType type, PtextMod ptext_mod, NoiseBound n
     }
     else
     {
-        PolyDegree n(GenPrime_long(12));                // F-ntru has higher noise --> better security
-        CtextMod q(GenPrime_ZZ(142));
+        PolyDegree n(GenPrime_long(6/*12*/));                // F-ntru has higher noise --> better security
+        CtextMod q(GenPrime_ZZ(200/*142*/));
         set_rings(noise_bound, ptext_mod, q, n, MonomialPlusOne);
         FindSmallestCoeffMod(d);
 
-        block_size_ = 1 << 16;
+        block_size_ = 1 << 2;
 
         // To do : for secure fntru change the error distributions
         // In Section 5 of https://eprint.iacr.org/2016/315.pdf

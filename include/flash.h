@@ -7,6 +7,7 @@
 #include "decrypter.h"
 #include "arith.h"
 #include <vector>
+#include <time.h>
 
 using namespace NTL;
 
