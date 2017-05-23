@@ -17,7 +17,7 @@ typedef ZZ CtextMod;
 typedef ZZ CoeffMod;
 typedef ZZX PolyMod;
 
-enum PolyType {Monomial, MonomialPlusOne, MonomialMinusOne};
+enum PolyType {Monomial, MonomialPlusOne, MonomialMinusOne, Cyclotomic};
 struct Ring
 {
     Ring() {}

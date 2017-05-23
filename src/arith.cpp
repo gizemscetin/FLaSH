@@ -170,6 +170,12 @@ void PolyInit(ZZX &out, int degree, PolyType type)
         out[0] = 1;
     else if (type == MonomialMinusOne)
         out[0] = -1;
+    else if (type == Cyclotomic)
+    {
+        out[0] = -1;
+        ZZX x_minus_1 = ZZX(INIT_MONO, 1, 1) - 1;
+        out /= x_minus_1;
+    }
 }
 
 /*

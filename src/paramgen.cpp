@@ -1,13 +1,16 @@
 #include "paramgen.h"
 
-ParamGen::ParamGen(FheType fhe, ParamType type, PtextMod ptext_mod, NoiseBound noise_bound, CircuitDepth d)
+ParamGen::ParamGen(FheType fhe, ParamType type, PtextMod ptext_mod, NoiseBound noise_bound, CircuitDepth d, bool BatchingOn)
 {
     if(type == Test)
     {
-        PolyDegree n(27);                               // Small degree for testing
+        PolyDegree n(31);                               // Small degree for testing
         CtextMod q(GenPrime_ZZ(30));                     // small coefficients for faster arithmetic
-        set_rings(noise_bound, ptext_mod, q, n, MonomialPlusOne);
-        FindSmallestCoeffMod(d);                        // check if q is large enough to handle the noise
+        if(BatchingOn)
+            set_rings(noise_bound, ptext_mod, q, n, Cyclotomic);
+        else
+            set_rings(noise_bound, ptext_mod, q, n, MonomialPlusOne);
+        //FindSmallestCoeffMod(d);                        // check if q is large enough to handle the noise
 
         block_size_ = 2;
     }
@@ -22,12 +25,15 @@ ParamGen::ParamGen(FheType fhe, ParamType type, PtextMod ptext_mod, NoiseBound n
     }
     else
     {
-        PolyDegree n(GenPrime_long(6/*12*/));                // F-ntru has higher noise --> better security
-        CtextMod q(GenPrime_ZZ(200/*142*/));
-        set_rings(noise_bound, ptext_mod, q, n, MonomialPlusOne);
-        FindSmallestCoeffMod(d);
+        PolyDegree n(8191);                         // F-ntru has higher noise --> better security
+        CtextMod q(GenPrime_ZZ(30));
+        if(BatchingOn)
+            set_rings(noise_bound, ptext_mod, q, n, Cyclotomic);
+        else
+            set_rings(noise_bound, ptext_mod, q, n, MonomialPlusOne);
+        //FindSmallestCoeffMod(d);
 
-        block_size_ = 1 << 2;
+        block_size_ = 2;
 
         // To do : for secure fntru change the error distributions
         // In Section 5 of https://eprint.iacr.org/2016/315.pdf

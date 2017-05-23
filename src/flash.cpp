@@ -6,6 +6,7 @@ Flash::~Flash()
     if(decrypter_ != nullptr) delete decrypter_;
     if(param_generator_ != nullptr) delete param_generator_;
     if(key_generator_ != nullptr) delete key_generator_;
+    if(batcher_ != nullptr) delete batcher_;
 }
 
 
@@ -17,11 +18,12 @@ Flash::~Flash()
 ** B = to_ZZ(1),
 ** d = 0
 */
-void Flash::InitParams(ParamType type, PtextMod p, NoiseBound B, CircuitDepth d)
+void Flash::InitParams(bool batchingOn, ParamType type, PtextMod p, NoiseBound B, CircuitDepth d)
 {
     if(param_generator_ != nullptr)
         delete param_generator_;
-    param_generator_ = new ParamGen(fhe_type_, type, p, B, d);
+    param_generator_ = new ParamGen(fhe_type_, type, p, B, d, batchingOn);
+    batcher_ = new Batcher(param_generator_->ptext_ring());
 }
 
 void Flash::InitKeys()
@@ -71,6 +73,16 @@ void Flash::Evaluator()
         return;
     }
 
+}
+
+void Flash::Batch(Plaintext &out, const PlaintextArray &in)
+{
+    out = batcher_->batch(in);
+}
+
+void Flash::Unbatch(PlaintextArray &out, const Plaintext &in, int ptext_cnt)
+{
+    out = batcher_->unbatch(in, ptext_cnt);
 }
 
 void Flash::Encrypt(CiphertextArray &ctext, int byte_message)

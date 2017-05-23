@@ -18,7 +18,7 @@ class ParamGen
         //ParamGen();
         virtual ~ParamGen();
 
-        ParamGen(FheType fhe, ParamType type, PtextMod ptext_mod, NoiseBound noise_bound, CircuitDepth d);
+        ParamGen(FheType fhe, ParamType type, PtextMod ptext_mod, NoiseBound noise_bound, CircuitDepth d, bool BatchingOn = false);
         //ParamGen(NoiseBound noise_bound, PtextMod ptext_mod, CtextMod ctext_mod, PolyMod poly_mod);
         //ParamGen(FheType fhe, NoiseBound noise_bound, PtextMod ptext_mod, CtextMod ctext_mod, PolyDegree deg, PolyType type, int ptext_count = 1);
 
