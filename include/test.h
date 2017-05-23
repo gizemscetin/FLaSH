@@ -9,6 +9,7 @@ using namespace NTL;
 typedef vector<FntruCiphertext> FntruVector;
 typedef vector<FntruVector> FntruMatrix;
 
+void TestBatching();
 
 void TestBitEncryptDecrypt();
 void TestBitAND();
@@ -21,6 +22,8 @@ void TestBitSXL();
 void TestByteEncryptDecrypt();
 void TestByteEQ();
 void TestByteLT();
+
+void TestBatchedComparison();
 
 void TestSort(ParamType type = Secure);
 void TestRank();

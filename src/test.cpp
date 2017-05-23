@@ -1,5 +1,32 @@
 #include "test.h"
 
+void TestBatching()
+{
+    Flash F;
+    F.InitParams(true);
+
+    PlaintextArray plains;
+    int cnt = F.slot_count();
+    for(int i=0; i<cnt; i++)
+    {
+        plains.append(Plaintext(rand()%2));
+        cout << plains[i] << endl;
+    }
+    cout << endl << endl;
+
+    Plaintext pt;
+    F.Batch(pt, plains);
+    cout << pt << endl;
+
+    vec_ZZX pl;
+    F.Unbatch(pl, pt, F.slot_count());
+    for(int i=0; i<pl.length(); i++)
+    {
+        cout << pl[i] << endl;
+    }
+}
+
+
 void TestBitEncryptDecrypt()
 {
     Flash F;
@@ -130,6 +157,38 @@ void TestByteLT()
     cout << m1 << " < " << m2 << " : " << pt << endl;
 }
 
+void TestBatchedComparison()
+{
+    srand (time(NULL));
+    time_t start_time, end_time;
+    int input_set_size = 4;
+
+
+    Flash F;
+    F.InitParams(true);
+    F.InitKeys();
+    F.InitCrypter();
+
+    vector<int> m;
+    vector<PlaintextArray> plains(8);
+    cout << "Input list : ";
+    for(int i=0; i<input_set_size; i++)
+    {
+        m.push_back(rand()%256);
+        cout << m.back() << " ";
+
+        PlaintextArray ptext;
+        PolyBlockDecompose(ptext, to_ZZX(m.back()), 8);
+
+        for(int j=0; j<8; j++)
+        {
+            plains[j]
+        }
+    }
+    cout << endl;
+
+}
+
 void TestSort(ParamType type)
 {
     srand (time(NULL));
@@ -137,7 +196,7 @@ void TestSort(ParamType type)
     int input_set_size = 4;
 
     Flash F;
-    F.InitParams(type);
+    F.InitParams(false, type);
     F.InitKeys();
     F.InitCrypter();
 

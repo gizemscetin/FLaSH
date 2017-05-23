@@ -6,6 +6,7 @@
 #include "encrypter.h"
 #include "decrypter.h"
 #include "arith.h"
+#include "batcher.h"
 #include <vector>
 #include <time.h>
 
@@ -20,7 +21,7 @@ class Flash
         Flash(FheType fhe = flattened) { fhe_type_ = fhe; };
         virtual ~Flash();
 
-        void InitParams(ParamType type = Test, PtextMod p = to_ZZ(2), NoiseBound B = to_ZZ(1), CircuitDepth d = 0);
+        void InitParams(bool BatchingOn = false, ParamType type = Test, PtextMod p = to_ZZ(2), NoiseBound B = to_ZZ(1), CircuitDepth d = 0);
         void InitKeys();
         void InitCrypter();
         void Evaluator();
@@ -29,6 +30,9 @@ class Flash
         //void PrintKeys();
         //void TestKeys();
         //void SetKeys();
+
+        void Batch(Plaintext &out, const PlaintextArray &in);
+        void Unbatch(PlaintextArray &out, const Plaintext &in, int ptext_count);
 
         void Encrypt(CiphertextArray &ctext, int byte_message);
         void Encrypt(Ciphertext &ctext, const Plaintext &ptext);
@@ -62,6 +66,10 @@ class Flash
         const Decrypter* decrypter() const { return decrypter_;};
         const ParamGen* param_generator() const { return param_generator_;};
         const KeyGen* key_generator() const { return key_generator_;};
+        const Batcher* batcher() const { return batcher_; };
+
+
+        int slot_count() { return batcher_->factor_count(); };
 
     protected:
 
@@ -70,6 +78,7 @@ class Flash
         Decrypter* decrypter_ = nullptr;
         KeyGen* key_generator_ = nullptr;
         ParamGen* param_generator_ = nullptr;
+        Batcher* batcher_ = nullptr;
 
         KeyPair keys_;
         FheType fhe_type_;  // Will be used in error distribution, key gen and encryption/decryption
