@@ -14,6 +14,7 @@ int main()
 
     //TestBatching();
 
+    TestBatchedComparison();
 
     return 0;
 }
