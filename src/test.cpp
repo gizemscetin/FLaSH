@@ -142,7 +142,7 @@ void TestByteEQ()
 void TestByteLT()
 {
     Flash F;
-    F.InitParams();
+    F.InitParams(Secure);
     F.InitKeys();
     F.InitCrypter();
 
