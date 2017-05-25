@@ -180,10 +180,10 @@ void TestBatchedComparison()
         PlaintextArray ptext;
         PolyBlockDecompose(ptext, to_ZZX(m.back()), 8);
 
-        for(int j=0; j<8; j++)
-        {
-            plains[j]
-        }
+        //for(int j=0; j<8; j++)
+        //{
+            //plains[j]
+        //}
     }
     cout << endl;
 

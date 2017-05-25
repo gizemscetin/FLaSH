@@ -21,6 +21,8 @@ class Batcher
         vec_ZZX unbatch(const ZZX &in);
         vec_ZZX unbatch(const ZZX &in, int cnt);
 
+
+
     protected:
 
     private:

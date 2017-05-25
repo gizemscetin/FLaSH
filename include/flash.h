@@ -70,6 +70,8 @@ class Flash
 
 
         int slot_count() { return batcher_->factor_count(); };
+        void Mask(ZZX &out, const ZZX &in, vector<int> mask);
+        void Select(ZZX &out, const ZZX &in, vector<int> selection_indices);
 
     protected:
 
