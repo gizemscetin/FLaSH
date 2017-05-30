@@ -17,6 +17,13 @@ Batcher::Batcher(const Ring &R)
 
     // Quick Check
     //cout << "d * t = " << d * factor_count() << endl;
+    cout << "Cyclotomic = " << R.poly_mod << endl;
+    cout << "Factor count = " << factor_count() << endl
+         << "Factor degree = " << d << endl;
+    for(int i=0; i<factors_.length(); i++)
+    {
+        cout << "F_" << i << " = " << factors_[i] << endl;
+    }
 
     n_.SetLength(factors_.length());
     //n_inv_.SetLength(factors_.length());
@@ -30,6 +37,20 @@ Batcher::Batcher(const Ring &R)
         f_inv = inv(f);
         n_[i] *= rep(f_inv);
     }
+
+    // Test
+    /*
+    ZZ_pE::init(factors_[1]);
+    ZZ_pE f, f_inv;
+    ZZ_pX temp = n_[0]/factors_[1];
+    f = to_ZZ_pE(temp);
+    cout << "N_0/F_1 mod F_1 = " << rep(f) << endl;
+    f_inv = inv(f);
+    cout << "Inverse of N_0/F_1 mod F_1 = " << rep(f_inv) << endl;
+    temp *= rep(f_inv);
+    test_ = to_ZZX(temp);
+    cout << "Test = " << test_ << endl;
+    */
 }
 
 

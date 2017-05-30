@@ -271,3 +271,14 @@ void Flash::Select(ZZX &out, const ZZX &in, vector<int> selection_indices)
     }
     Mask(out, in, mask);
 }
+
+void Flash::Permute(FntruCiphertext &out, const FntruCiphertext &in)
+{
+    ZZX x_six;
+    PolyInit(x_six, 6, Monomial);
+    out.SetLength(in.length());
+    for(int i=0; i<in.length(); i++)
+    {
+        PolyEvaluate(out[i], in[i], x_six, param_generator_->ctext_ring());
+    }
+}

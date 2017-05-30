@@ -21,7 +21,7 @@ class Batcher
         vec_ZZX unbatch(const ZZX &in);
         vec_ZZX unbatch(const ZZX &in, int cnt);
 
-
+        ZZX test() { return test_; };
 
     protected:
 
@@ -31,6 +31,8 @@ class Batcher
         vec_ZZ_pX factors_;
         vec_ZZ_pX n_;
         //vec_ZZ_pX n_inv_;
+
+        ZZX test_;
 };
 
 #endif // BATCHER_H
