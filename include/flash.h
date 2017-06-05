@@ -42,6 +42,7 @@ class Flash
         void Decrypt(PlaintextArray &ptext, const CiphertextArray &ctext);
         void Decrypt(Plaintext &ptext, const FntruCiphertext &ctext);
         void Decrypt(PlaintextArray &ptext, const FntruCiphertextArray &ctext);
+        void Decrypt(Plaintext &ptext, const FntruCiphertext &ctext, const SecretKey &sk);
 
         void AND(FntruCiphertext &out, const FntruCiphertext &in1, const FntruCiphertext &in2);
         void AND(Ciphertext &out, const Ciphertext &in1, const FntruCiphertext &in2);
@@ -73,6 +74,9 @@ class Flash
         void Mask(ZZX &out, const ZZX &in, vector<int> mask);
         void Select(ZZX &out, const ZZX &in, vector<int> selection_indices);
         void Permute(FntruCiphertext &out, const FntruCiphertext &in);
+
+
+        KeyPair keys() { return keys_; };
 
     protected:
 

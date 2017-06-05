@@ -11,7 +11,8 @@ Batcher::Batcher(const Ring &R)
     ZZ_pX h = to_ZZ_pX(helper_poly);
     // (m = cyc degree) "m | 2^d - 1"
     long m = deg(R.poly_mod) + 1; // Assuming "m" is a prime
-    long d = log(m+1)/log(2.0);
+    long d = log(m+1)/log(to_double(p_));
+    //long d = 1;
 
     EDF(factors_, mod_, h, d);
 
@@ -35,7 +36,9 @@ Batcher::Batcher(const Ring &R)
         ZZ_pE f, f_inv;
         f = to_ZZ_pE(n_[i]);
         f_inv = inv(f);
+        //cout << i << " -> " << rep(f_inv) << endl;
         n_[i] *= rep(f_inv);
+        //cout << n_[i] << endl;
     }
 
     // Test

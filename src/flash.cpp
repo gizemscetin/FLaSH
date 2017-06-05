@@ -137,6 +137,11 @@ void Flash::Decrypt(PlaintextArray &ptext, const FntruCiphertextArray &ctext)
     }
 }
 
+void Flash::Decrypt(Plaintext &ptext, const FntruCiphertext &ctext, const SecretKey &sk)
+{
+    decrypter_->Decrypt(ptext, ctext, sk);
+}
+
 void Flash::AND(FntruCiphertext &out, const FntruCiphertext &in1, const FntruCiphertext &in2)
 {
     out.SetLength(param_generator_->block_count());
