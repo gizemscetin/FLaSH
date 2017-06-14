@@ -18,16 +18,15 @@ Batcher::Batcher(const Ring &R)
 
     // Quick Check
     //cout << "d * t = " << d * factor_count() << endl;
-    cout << "Cyclotomic = " << R.poly_mod << endl;
-    cout << "Factor count = " << factor_count() << endl
-         << "Factor degree = " << d << endl;
+    //cout << "Cyclotomic = " << R.poly_mod << endl;
+    //cout << "Factor count = " << factor_count() << endl
+    //     << "Factor degree = " << d << endl;
     for(int i=0; i<factors_.length(); i++)
-    {
+    //{
         cout << "F_" << i << " = " << factors_[i] << endl;
-    }
+    //}
 
     n_.SetLength(factors_.length());
-    //n_inv_.SetLength(factors_.length());
 
     for(int i=0; i<factors_.length(); i++)
     {
@@ -36,24 +35,8 @@ Batcher::Batcher(const Ring &R)
         ZZ_pE f, f_inv;
         f = to_ZZ_pE(n_[i]);
         f_inv = inv(f);
-        //cout << i << " -> " << rep(f_inv) << endl;
         n_[i] *= rep(f_inv);
-        //cout << n_[i] << endl;
     }
-
-    // Test
-    /*
-    ZZ_pE::init(factors_[1]);
-    ZZ_pE f, f_inv;
-    ZZ_pX temp = n_[0]/factors_[1];
-    f = to_ZZ_pE(temp);
-    cout << "N_0/F_1 mod F_1 = " << rep(f) << endl;
-    f_inv = inv(f);
-    cout << "Inverse of N_0/F_1 mod F_1 = " << rep(f_inv) << endl;
-    temp *= rep(f_inv);
-    test_ = to_ZZX(temp);
-    cout << "Test = " << test_ << endl;
-    */
 }
 
 
@@ -95,6 +78,87 @@ vec_ZZX Batcher::unbatch(const ZZX &in, int cnt)
         out.append(to_ZZX(rep(temp)));
     }
     return out;
+}
+
+vec_ZZX Batcher::unbatch(const ZZX &in)
+{
+    return unbatch(in, factors_.length());
+}
+
+vec_ZZX Batcher::ApplyMappings(const vec_ZZX &in, long j)
+{
+    vector<long> permutation = GetPermutation(j);
+
+    ZZX x_j;
+    PolyInit(x_j, j, Monomial);
+
+    int next = 0;
+
+    do
+    {
+        Ring R(p_, to_ZZX(factors_[next]));
+        long next = permutation[next];
+
+
+
+    }while(next != 0);
+
+}
+
+vector<long> Batcher::GetPermutation(long j)
+{
+    ZZX x_j;
+    PolyInit(x_j, j, Monomial);
+
+    Ring R(p_, to_ZZX(mod_));
+
+    vector<long> out(factors_.length());
+
+    int index = 0;
+    out[0] = 0;
+
+    for(int i=1; i<factors_.length(); i++)
+    {
+        ZZX temp = to_ZZX(n_[index]);
+        PolyEvaluate(temp, temp, x_j, R);
+
+        vec_ZZX permuted = unbatch(temp);
+        for(int j=0; j<permuted.length(); j++)
+        {
+            if(permuted[j] == 1)
+            {
+                out[i] = j;
+                index = j;
+                break;
+            }
+        }
+    }
+
+    return out;
+}
+
+void Batcher::ReorderFactorsForRightCyclicShift(long j, long k)
+{
+    vec_ZZ_pX temp_factors;// = factors_;
+    vec_ZZ_pX temp_n;// = n_;
+    temp_factors.SetLength(factors_.length());
+    temp_n.SetLength(n_.length());
+
+    vector<long> currentPermutation = GetPermutation(j);
+
+    for(int i=0; i<factors_.length(); i++)
+    {
+        long mapped_index = currentPermutation[i];
+        //cout << mapped_index << endl;
+        long goal_i = (mapped_index - k + factors_.length()) % factors_.length();
+        cout << goal_i << endl;
+        temp_factors[goal_i] = factors_[i];
+        temp_n[goal_i] = n_[i];
+    }
+    factors_ = temp_factors;
+    n_ = temp_n;
+    //for(int i=0; i<factors_.length(); i++)
+    //    cout << "F_" << i << " = " << factors_[i] << endl;
 }
 
 

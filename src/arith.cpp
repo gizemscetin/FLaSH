@@ -314,14 +314,9 @@ void PolyEvaluate(ZZX &out, const ZZX &in1, const ZZX &in2, const Ring &r)
     out_temp = to_ZZ_pE(in1[0]);
     for(int i=1; i<=deg(in1); i++)
     {
-        cout << " i = " << i << " : " << in_temp << endl;
         out_temp += (in_temp * to_ZZ_pE(in1[i]));
-        cout << " i = " << i << " : " << out_temp << endl << endl;
         in_temp *= to_ZZ_pE(to_ZZ_pX(in2));
     }
     out = to_ZZX(rep(out_temp));
-    cout << "Eval result = " << out << endl;
 }
-
-
 

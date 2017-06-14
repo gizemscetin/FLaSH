@@ -10,21 +10,6 @@ using namespace NTL;
 // Test Flash library
 int main()
 {
-/*
-    long p = 32;
-    long r = primroot(p, 11);
-    cout << r << endl;
-
-
-    for(int i=0; i<11; i++)
-    {
-        int a = int(pow(r, i+1)) % p;
-        if(a < 0) a += p;
-        cout << i+1 << " : " << a << endl;
-    }
-*/
-
-
     //TestSort();
 
     //TestBatching();
@@ -34,7 +19,17 @@ int main()
     Ring R(q, cyc_poly);
     Batcher B(R);
 
+    vector<long> sigma = B.GetPermutation(6);
+    for(int i=0; i<sigma.size(); i++)
+    {
+        cout << sigma[i] << " -> ";
+    }
+    cout << endl << endl;
 
+
+
+
+/*
     vec_ZZX A;
     ZZX A_out;
 
@@ -71,7 +66,7 @@ int main()
     for(int i=0; i<A.length(); i++)
         cout << A[i] << endl;
     cout << endl << endl;
-
+*/
 
 /*
 

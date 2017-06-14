@@ -21,7 +21,12 @@ class Batcher
         vec_ZZX unbatch(const ZZX &in);
         vec_ZZX unbatch(const ZZX &in, int cnt);
 
-        ZZX test() { return test_; };
+        vec_ZZX ApplyMappings(const vec_ZZX &in, long j);
+
+        vector<long> GetPermutation(long j);
+        void ReorderFactorsForRightCyclicShift(long j, long k=1);
+
+
 
     protected:
 
@@ -30,9 +35,6 @@ class Batcher
         ZZ_pX mod_;
         vec_ZZ_pX factors_;
         vec_ZZ_pX n_;
-        //vec_ZZ_pX n_inv_;
-
-        ZZX test_;
 };
 
 #endif // BATCHER_H
