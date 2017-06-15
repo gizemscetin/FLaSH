@@ -302,6 +302,13 @@ void PolyVectorDotProduct(ZZX &out, const vec_ZZX &in1, const vec_ZZX &in2, cons
 // PolyEvaluate(A_out, A_out, x_six, R);
 void PolyEvaluate(ZZX &out, const ZZX &in1, const ZZX &in2, const Ring &r)
 {
+    if(deg(in1) <= 0)
+    {
+        out = in1;
+        return;
+    }
+
+
     ZZ_p::init(r.coeff_mod);
 	ZZ_pX phi;
 	phi = to_ZZ_pX(r.poly_mod);
@@ -309,8 +316,6 @@ void PolyEvaluate(ZZX &out, const ZZX &in1, const ZZX &in2, const Ring &r)
 
 	ZZ_pE out_temp, in_temp;
 	in_temp = to_ZZ_pE(to_ZZ_pX(in2));
-
-
     out_temp = to_ZZ_pE(in1[0]);
     for(int i=1; i<=deg(in1); i++)
     {
