@@ -22,6 +22,9 @@ class Decrypter
         void Decrypt(Plaintext &ptext, const Ciphertext &ctext) const;
         void Decrypt(Plaintext &ptext, const CiphertextArray &ctext) const;
 
+        void Decrypt(Plaintext &ptext, const Ciphertext &ctext, const SecretKey &sk) const;
+        void Decrypt(Plaintext &ptext, const CiphertextArray &ctext, const SecretKey &sk) const;
+
     protected:
 
     private:

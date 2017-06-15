@@ -137,6 +137,11 @@ void Flash::Decrypt(PlaintextArray &ptext, const FntruCiphertextArray &ctext)
     }
 }
 
+void Flash::Decrypt(Plaintext &ptext, const FntruCiphertext &ctext, const SecretKey &sk)
+{
+    decrypter_->Decrypt(ptext, ctext, sk);
+}
+
 void Flash::AND(FntruCiphertext &out, const FntruCiphertext &in1, const FntruCiphertext &in2)
 {
     out.SetLength(param_generator_->block_count());
@@ -250,3 +255,35 @@ void Flash::SXL(FntruCiphertext &out, const FntruCiphertext &in, int shift_amoun
     PolyShiftLeft(out, in, shift_amount, param_generator_->ctext_ring());
 }
 
+
+void Flash::Mask(Plaintext &out, const Plaintext &in, vector<int> mask)
+{
+    vector<ZZX> temp;
+    for(int i=0; i<mask.size(); i++)
+    {
+        temp.push_back(ZZX(mask[i]));
+    }
+    out = batcher_->batch(temp);
+    PolyMultPoly(out, out, in, param_generator_->ptext_ring());
+}
+
+void Flash::Select(ZZX &out, const ZZX &in, vector<int> selection_indices)
+{
+    vector<int> mask(batcher_->factor_count(), 0);
+    for(int i=0; i<selection_indices.size(); i++)
+    {
+        mask[selection_indices[i]] = 1;
+    }
+    Mask(out, in, mask);
+}
+
+void Flash::Permute(FntruCiphertext &out, const FntruCiphertext &in)
+{
+    ZZX x_six;
+    PolyInit(x_six, 6, Monomial);
+    out.SetLength(in.length());
+    for(int i=0; i<in.length(); i++)
+    {
+        PolyEvaluate(out[i], in[i], x_six, param_generator_->ctext_ring());
+    }
+}

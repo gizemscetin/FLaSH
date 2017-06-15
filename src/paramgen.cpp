@@ -4,7 +4,7 @@ ParamGen::ParamGen(FheType fhe, ParamType type, PtextMod ptext_mod, NoiseBound n
 {
     if(type == Test)
     {
-        PolyDegree n(31);                               // Small degree for testing
+        PolyDegree n(7);                               // Small degree for testing
         CtextMod q(GenPrime_ZZ(30));                     // small coefficients for faster arithmetic
         if(BatchingOn)
             set_rings(noise_bound, ptext_mod, q, n, Cyclotomic);

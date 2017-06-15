@@ -63,5 +63,11 @@ void PolyBlockDecomposeInverse(ZZX &out, const vec_ZZX &in, int block_size = 2);
 
 void PolyVectorDotProduct(ZZX &out, const vec_ZZX &in1, const vec_ZZX &in2, const Ring &r);
 
+void PolyEvaluate(ZZX &out, const ZZX &in1, const ZZX &in2, const Ring &r);
+
+
+ZZX FindCyclotomic(long N);
+long primroot(long N,long phiN);
+
 
 #endif // ARITH_H

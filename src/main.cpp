@@ -14,7 +14,7 @@ int main()
 
     //TestBatching();
 
-    TestBatchedComparison();
+    TestRotateMsgSlots();
 
     return 0;
 }

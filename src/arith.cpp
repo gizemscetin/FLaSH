@@ -163,6 +163,63 @@ void PolyBalanceCoeff(ZZX &out, const ZZX &in, const ZZ &mod)
     out.normalize();
 }
 
+long mobius(long n)
+{
+  long p,e,arity=0;
+  PrimeSeq s;
+  while (n!=1)
+    { p=s.next();
+      e=0;
+      while ((n%p==0)) { n=n/p; e++; }
+      if (e>1) { return 0; }
+      if (e!=0) { arity^=1; }
+    }
+  if (arity==0) { return 1; }
+  return -1;
+}
+
+/* Compute cyclotomic polynomial */
+ZZX FindCyclotomic(long N)
+{
+  ZZX Num,Den,G,F;
+  NTL::set(Num); NTL::set(Den);
+  long m,d;
+  for (d=1; d<=N; d++)
+    { if ((N%d)==0)
+         { clear(G);
+           SetCoeff(G,N/d,1); SetCoeff(G,0,-1);
+           m=mobius(d);
+           if (m==1)       { Num*=G; }
+           else if (m==-1) { Den*=G; }
+         }
+    }
+  F=Num/Den;
+  return F;
+}
+
+/* Find a primitive root modulo N */
+long primroot(long N,long phiN)
+{
+  long g=2,p;
+  PrimeSeq s;
+  bool flag=false;
+
+  while (flag==false)
+    { flag=true;
+      s.reset(1);
+      do
+        { p=s.next();
+          if ((phiN%p)==0)
+            { if (PowerMod(g,phiN/p,N)==1)
+                { flag=false; }
+            }
+        }
+      while (p<phiN && flag);
+      if (flag==false) { g++; }
+    }
+  return g;
+}
+
 void PolyInit(ZZX &out, int degree, PolyType type)
 {
     out = ZZX(INIT_MONO, degree, 1);
@@ -242,7 +299,29 @@ void PolyVectorDotProduct(ZZX &out, const vec_ZZX &in1, const vec_ZZX &in2, cons
     }
 }
 
+// PolyEvaluate(A_out, A_out, x_six, R);
+void PolyEvaluate(ZZX &out, const ZZX &in1, const ZZX &in2, const Ring &r)
+{
+    if(deg(in1) <= 0)
+    {
+        out = in1;
+        return;
+    }
 
 
+    ZZ_p::init(r.coeff_mod);
+	ZZ_pX phi;
+	phi = to_ZZ_pX(r.poly_mod);
+	ZZ_pE::init(phi);
 
+	ZZ_pE out_temp, in_temp;
+	in_temp = to_ZZ_pE(to_ZZ_pX(in2));
+    out_temp = to_ZZ_pE(in1[0]);
+    for(int i=1; i<=deg(in1); i++)
+    {
+        out_temp += (in_temp * to_ZZ_pE(in1[i]));
+        in_temp *= to_ZZ_pE(to_ZZ_pX(in2));
+    }
+    out = to_ZZX(rep(out_temp));
+}
 

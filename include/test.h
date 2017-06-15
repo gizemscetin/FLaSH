@@ -33,6 +33,9 @@ void TestPolyRankSort();
 void TestOddEvenMergeSort();
 
 
+void TestRotateMsgSlots();
+
+
 void GetRandomEncryptions(FntruMatrix &out, int base = 256, int count = 1);
 
 #endif

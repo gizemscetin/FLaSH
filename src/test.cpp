@@ -542,3 +542,40 @@ void GetRandomEncryptions(FntruCiphertextArray &out, int base = 256, int count =
     cout << endl;
 }
 
+
+void TestRotateMsgSlots()
+{
+    CoeffMod q(2);
+    PolyMod cyc_poly = FindCyclotomic(31);
+    Ring R(q, cyc_poly);
+    Batcher B(R);
+    int l = B.factor_count();
+    long g = 6; // Order l element in (Z/mZ)*
+    B.ReorderFactorsForRightCyclicShift(g);
+    ZZX x_g;
+    PolyInit(x_g, g, Monomial);
+
+    vec_ZZX A, A_mapped;
+    ZZX A_out;
+    A.SetLength(l);
+
+    Ring slot_R(q, B.FirstFactor());
+
+    for(int i=0; i<A.length(); i++)
+    {
+        PolySample(A[i], slot_R);
+        cout << "Msg_" << i << " : " << A[i] << endl;
+    }
+    cout << endl << endl;
+
+    A_mapped = B.ApplyMappings(A, g);
+    A_out = B.batch(A_mapped);
+    // Rotate
+    PolyEvaluate(A_out, A_out, x_g, R);
+    A = B.unbatch(A_out, l);
+    A = B.ApplyInverseMappings(A, g);
+    for(int i=0; i<A.length(); i++)
+    {
+        cout << "Msg_" << i << " : " << A[i] << endl;
+    }
+}

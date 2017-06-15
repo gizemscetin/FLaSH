@@ -31,6 +31,22 @@ void Decrypter::Decrypt(Plaintext &ptext, const CiphertextArray &ctext) const
     Decrypt(ptext, ctext[0]);
 }
 
+void Decrypter::Decrypt(Plaintext &ptext, const Ciphertext &ctext, const SecretKey &sk) const
+{
+    /* Decryption method from the paper:
+    ** m = cf mod p
+    */
+    PolyMultPoly(ptext, ctext, sk, ctext_ring_);
+    PolyBalanceCoeff(ptext, ptext, ctext_ring_.coeff_mod);
+    PolyReduceCoeff(ptext, ptext, ptext_mod_);
+}
+
+void Decrypter::Decrypt(Plaintext &ptext, const CiphertextArray &ctext, const SecretKey &sk) const
+{
+    // Decrypt the first ciphertext in the vector
+    Decrypt(ptext, ctext[0], sk);
+}
+
 Decrypter::~Decrypter()
 {
     //dtor
