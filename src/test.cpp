@@ -171,21 +171,47 @@ void TestBatchedComparison()
 
     vector<int> m;
     vector<PlaintextArray> plains(8);
+    for(int j=0; j<8; j++)
+    {
+        plains[j].SetLength(input_set_size);
+    }
     cout << "Input list : ";
     for(int i=0; i<input_set_size; i++)
     {
         m.push_back(rand()%256);
         cout << m.back() << " ";
 
-        PlaintextArray ptext;
+        PlaintextArray ptext;cd
         PolyBlockDecompose(ptext, to_ZZX(m.back()), 8);
 
-        //for(int j=0; j<8; j++)
-        //{
-            //plains[j]
-        //}
+        for(int j=0; j<8; j++)
+        {
+            plains[j][i] = ptext[j];
+        }
     }
     cout << endl;
+
+    PlaintextArray batched_plains;
+    batched_plains.SetLength(8);
+    for(int i=0; i<8; i++)
+        F.Batch(batched_plains[i], plains[i]);
+
+    FntruCiphertextArray encrytped_plains(8);
+    for(int i=0; i<8; i++)
+        F.Encrypt(encrytped_plains[i], batched_plains[i]);
+
+
+    PlaintextArray decrypted_plains;
+    decrypted_plains.SetLength(8);
+    for(int i=0; i<8; i++)
+        F.Decrypt(decrypted_plains[i], encrytped_plains[i]);
+
+    for(int i=0; i<8; i++)
+    {
+        PlaintextArray unbatched_plain;
+        F.Unbatch(unbatched_plain, decrypted_plains[i], input_set_size);
+        cout << unbatched_plain << endl;
+    }
 
 }
 
