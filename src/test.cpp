@@ -30,11 +30,12 @@ void TestBatching()
 void TestBitEncryptDecrypt()
 {
     Flash F;
-    F.InitParams();
+    F.InitParams(false, Secure);
     F.InitKeys();
     F.InitCrypter();
 
-    Plaintext m(1);
+
+    Plaintext m(rand()%2);
     cout << "Message: " <<  m << endl;
     FntruCiphertext ct;
     Plaintext pt;
@@ -46,18 +47,49 @@ void TestBitEncryptDecrypt()
 void TestBitAND()
 {
     Flash F;
-    F.InitParams();
+    F.InitParams(false, Secure);
     F.InitKeys();
     F.InitCrypter();
 
     Plaintext m1(rand()%2);
     Plaintext m2(rand()%2);
-    FntruCiphertext ct, ct1, ct2;
-    Plaintext pt, pt1, pt2;
 
+    Ciphertext ct, ct1;
+    FntruCiphertext ct2;
+    Plaintext pt;
+    F.Encrypt(ct1, m1);
+    F.Encrypt(ct2, m2);
+
+    auto start_time = chrono::high_resolution_clock::now();
     F.AND(ct, ct1, ct2);
+    auto end_time = chrono::high_resolution_clock::now();
     F.Decrypt(pt, ct);
-    cout << m1 << " AND " << m2 << " : " << pt << endl;
+    cout << m1 << " AND " << m2 << " : " << pt;
+    cout << "\t" << chrono::duration_cast<chrono::milliseconds>(end_time - start_time).count() << "ms." << endl;
+    //return difftime(end_time, start_time);
+}
+void TestBitAND2()
+{
+    Flash F;
+    F.InitParams(false, Secure);
+    F.InitKeys();
+    F.InitCrypter();
+
+    Plaintext m1(rand()%2);
+    Plaintext m2(rand()%2);
+
+    FntruCiphertext ct, ct1, ct2;
+    Plaintext pt;
+    F.Encrypt(ct1, m1);
+    F.Encrypt(ct2, m2);
+
+    auto start_time = chrono::high_resolution_clock::now();
+    F.AND(ct, ct1, ct2);
+    auto end_time = chrono::high_resolution_clock::now();
+    F.Decrypt(pt, ct);
+    cout << m1 << " AND " << m2 << " : " << pt;
+    cout << "\t" << chrono::duration_cast<chrono::seconds>(end_time - start_time).count() << " sec." << endl;
+    //return (double) (stop_time - start_time)/CLOCKS_PER_SEC;
 }
 void TestBitXOR()
 {
@@ -69,11 +101,17 @@ void TestBitXOR()
     Plaintext m1(rand()%2);
     Plaintext m2(rand()%2);
     FntruCiphertext ct, ct1, ct2;
-    Plaintext pt, pt1, pt2;
+    Plaintext pt;
 
+    F.Encrypt(ct1, m1);
+    F.Encrypt(ct2, m2);
+
+    auto start_time = chrono::high_resolution_clock::now();
     F.XOR(ct, ct1, ct2);
+    auto end_time = chrono::high_resolution_clock::now();
     F.Decrypt(pt, ct);
-    cout << m1 << " XOR " << m2 << " : " << pt << endl;
+    cout << m1 << " XOR " << m2 << " : " << pt;
+    cout << "\t" << chrono::duration_cast<chrono::milliseconds>(end_time - start_time).count() << "ms." << endl;
 }
 void TestBitNAND()
 {
@@ -160,7 +198,6 @@ void TestByteLT()
 void TestBatchedComparison()
 {
     srand (time(NULL));
-    time_t start_time, end_time;
     int input_set_size = 4;
 
 
@@ -181,7 +218,7 @@ void TestBatchedComparison()
         m.push_back(rand()%256);
         cout << m.back() << " ";
 
-        PlaintextArray ptext;cd
+        PlaintextArray ptext;
         PolyBlockDecompose(ptext, to_ZZX(m.back()), 8);
 
         for(int j=0; j<8; j++)
@@ -546,7 +583,8 @@ void GetRandomEncryptions(FntruCiphertextArray &out, int base = 256, int count =
 void TestRotateMsgSlots()
 {
     CoeffMod q(2);
-    PolyMod cyc_poly = FindCyclotomic(31);
+    PolyMod cyc_poly;
+    PolyInit(cyc_poly, 31, Cyclotomic);
     Ring R(q, cyc_poly);
     Batcher B(R);
     int l = B.factor_count();

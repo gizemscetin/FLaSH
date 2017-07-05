@@ -7,7 +7,9 @@
 
 using namespace NTL;
 
-enum FheType {leveled, flattened};
+/* With leveled, noise management is handled via ModSwitching */
+/* With flattened, noise management is handled via Flatten */
+enum FheType {somewhat, leveled, flattened};
 enum ParamType {Test, Secure};
 typedef int CircuitDepth;
 typedef int Radix;
@@ -19,8 +21,6 @@ class ParamGen
         virtual ~ParamGen();
 
         ParamGen(FheType fhe, ParamType type, PtextMod ptext_mod, NoiseBound noise_bound, CircuitDepth d, bool BatchingOn = false);
-        //ParamGen(NoiseBound noise_bound, PtextMod ptext_mod, CtextMod ctext_mod, PolyMod poly_mod);
-        //ParamGen(FheType fhe, NoiseBound noise_bound, PtextMod ptext_mod, CtextMod ctext_mod, PolyDegree deg, PolyType type, int ptext_count = 1);
 
         void set_rings(NoiseBound noise_bound, PtextMod ptext_mod, CtextMod ctext_mod, PolyDegree deg, PolyType type);
         void set_rings(NoiseBound noise_bound, PtextMod ptext_mod, CtextMod ctext_mod, PolyMod poly_mod);

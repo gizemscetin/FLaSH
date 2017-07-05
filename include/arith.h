@@ -5,6 +5,7 @@
 #include <NTL/ZZX.h>
 #include <NTL/ZZ_pE.h>
 #include <iostream>
+#include <time.h>
 
 using namespace std;
 using namespace NTL;
@@ -27,6 +28,7 @@ struct Ring
 };
 
 //int bitlength(int in){return ceil(log(in)/log(2.0));};
+int Mobius(int n);
 int BitLength(int in);
 int BitLength(ZZ in);
 int BlockLength(int in, int block_size);
@@ -65,8 +67,6 @@ void PolyVectorDotProduct(ZZX &out, const vec_ZZX &in1, const vec_ZZX &in2, cons
 
 void PolyEvaluate(ZZX &out, const ZZX &in1, const ZZX &in2, const Ring &r);
 
-
-ZZX FindCyclotomic(long N);
 long primroot(long N,long phiN);
 
 

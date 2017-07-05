@@ -1,5 +1,34 @@
 #include "arith.h"
 
+int Mobius(int n)
+{
+    long p, e, arity = 0;
+    PrimeSeq primes;
+    while(n!=1)
+    {
+        p = primes.next();
+        e = 0;
+        while(n%p==0)
+        {
+            n /= p;
+            e++;
+        }
+        if(e > 1)
+        {
+            return 0;
+        }
+        if(e!=0)
+        {
+            arity ^= 1;
+        }
+    }
+    if(arity == 0)
+    {
+        return 1;
+    }
+    return -1;
+}
+
 int BlockLength(ZZ in, ZZ block_size)
 {
     return ceil(log(in)/log(block_size));
@@ -163,63 +192,6 @@ void PolyBalanceCoeff(ZZX &out, const ZZX &in, const ZZ &mod)
     out.normalize();
 }
 
-long mobius(long n)
-{
-  long p,e,arity=0;
-  PrimeSeq s;
-  while (n!=1)
-    { p=s.next();
-      e=0;
-      while ((n%p==0)) { n=n/p; e++; }
-      if (e>1) { return 0; }
-      if (e!=0) { arity^=1; }
-    }
-  if (arity==0) { return 1; }
-  return -1;
-}
-
-/* Compute cyclotomic polynomial */
-ZZX FindCyclotomic(long N)
-{
-  ZZX Num,Den,G,F;
-  NTL::set(Num); NTL::set(Den);
-  long m,d;
-  for (d=1; d<=N; d++)
-    { if ((N%d)==0)
-         { clear(G);
-           SetCoeff(G,N/d,1); SetCoeff(G,0,-1);
-           m=mobius(d);
-           if (m==1)       { Num*=G; }
-           else if (m==-1) { Den*=G; }
-         }
-    }
-  F=Num/Den;
-  return F;
-}
-
-/* Find a primitive root modulo N */
-long primroot(long N,long phiN)
-{
-  long g=2,p;
-  PrimeSeq s;
-  bool flag=false;
-
-  while (flag==false)
-    { flag=true;
-      s.reset(1);
-      do
-        { p=s.next();
-          if ((phiN%p)==0)
-            { if (PowerMod(g,phiN/p,N)==1)
-                { flag=false; }
-            }
-        }
-      while (p<phiN && flag);
-      if (flag==false) { g++; }
-    }
-  return g;
-}
-
 void PolyInit(ZZX &out, int degree, PolyType type)
 {
     out = ZZX(INIT_MONO, degree, 1);
@@ -229,9 +201,38 @@ void PolyInit(ZZX &out, int degree, PolyType type)
         out[0] = -1;
     else if (type == Cyclotomic)
     {
-        out[0] = -1;
-        ZZX x_minus_1 = ZZX(INIT_MONO, 1, 1) - 1;
-        out /= x_minus_1;
+        if(ProbPrime(degree))
+        {
+            out[0] = -1;
+            ZZX x_minus_1 = ZZX(INIT_MONO, 1, 1) - 1;
+            out /= x_minus_1;
+        }
+        else
+        {
+            clear(out);
+            set(out);
+            ZZX out_temp;
+            set(out_temp);
+
+            for(int d=1; d<=degree; d++)
+            {
+                if(degree%d == 0) // Find divisors of cyclotomic degree
+                {
+                    ZZX temp;
+                    PolyInit(temp, degree/d, MonomialMinusOne);
+                    long mob = Mobius(d);
+                    if(mob == 1)
+                    {
+                        out *= temp;
+                    }
+                    else if(mob == -1)
+                    {
+                        out_temp *= temp;
+                    }
+                }
+            }
+            out = out/out_temp;
+        }
     }
 }
 

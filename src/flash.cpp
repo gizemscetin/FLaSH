@@ -23,7 +23,8 @@ void Flash::InitParams(bool batchingOn, ParamType type, PtextMod p, NoiseBound B
     if(param_generator_ != nullptr)
         delete param_generator_;
     param_generator_ = new ParamGen(fhe_type_, type, p, B, d, batchingOn);
-    batcher_ = new Batcher(param_generator_->ptext_ring());
+    if(batchingOn)
+        batcher_ = new Batcher(param_generator_->ptext_ring());
 }
 
 void Flash::InitKeys()

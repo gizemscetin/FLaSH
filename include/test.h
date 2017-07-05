@@ -2,7 +2,7 @@
 #define TEST_H
 
 #include "flash.h"
-
+#include <chrono>
 using namespace std;
 using namespace NTL;
 
@@ -13,6 +13,7 @@ void TestBatching();
 
 void TestBitEncryptDecrypt();
 void TestBitAND();
+void TestBitAND2();
 void TestBitXOR();
 void TestBitNAND();
 void TestBitEQ();

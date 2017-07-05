@@ -75,6 +75,7 @@ class Flash
         void Select(ZZX &out, const ZZX &in, vector<int> selection_indices);
         void Permute(FntruCiphertext &out, const FntruCiphertext &in);
 
+        void KeySwitch(Ciphertext &out, const Ciphertext &in, const CiphertextArray &new_key);
 
         KeyPair keys() { return keys_; };
 

@@ -10,11 +10,14 @@ using namespace NTL;
 // Test Flash library
 int main()
 {
+    //TestBitEncryptDecrypt();
+    TestBitAND2();
+
     //TestSort();
 
     //TestBatching();
 
-    TestRotateMsgSlots();
+    //TestRotateMsgSlots();
 
     return 0;
 }
